@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login — MindCare AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,600;12..96,700;12..96,800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --void: #05070f;
+            --deep: #080c1a;
+            --surface: #0d1224;
+            --glass: rgba(255,255,255,0.04);
+            --glass-border: rgba(255,255,255,0.08);
+            --glass-hover: rgba(255,255,255,0.07);
+            --cyan: #00e5ff;
+            --cyan-dim: rgba(0,229,255,0.15);
+            --cyan-glow: rgba(0,229,255,0.4);
+            --violet: #a855f7;
+            --violet-dim: rgba(168,85,247,0.15);
+            --emerald: #10d9a8;
+            --rose: #ff4f7b;
+            --text-primary: #f0f4ff;
+            --text-secondary: rgba(200,210,255,0.6);
+            --text-muted: rgba(150,165,220,0.4);
+            --font-display: 'Bricolage Grotesque', sans-serif;
+            --font-mono: 'DM Mono', monospace;
+            --radius-sm: 8px;
+            --radius-md: 14px;
+            --radius-lg: 22px;
+            --radius-xl: 32px;
+            --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+            --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-display);
+            background: var(--void);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .bg-mesh {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .bg-mesh::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(ellipse 80% 50% at 10% 0%, rgba(0,229,255,0.12) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 40% at 90% 20%, rgba(168,85,247,0.1) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 60% at 50% 100%, rgba(16,217,168,0.07) 0%, transparent 60%);
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0;
+            animation: orbFloat 18s ease-in-out infinite;
+        }
+
+        .orb-1 {
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(0,229,255,0.18), transparent 70%);
+            top: -200px; left: -150px;
+            animation-delay: 0s;
+        }
+        .orb-2 {
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(168,85,247,0.14), transparent 70%);
+            top: 30%; right: -100px;
+            animation-delay: -6s;
+        }
+
+        @keyframes orbFloat {
+            0%, 100% { opacity: 1; transform: translate(0,0) scale(1); }
+            33% { transform: translate(40px,-30px) scale(1.08); }
+            66% { transform: translate(-25px,40px) scale(0.94); }
+        }
+
+        .login-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 420px;
+            padding: 2rem;
+        }
+
+        .login-card {
+            background: var(--surface);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
+            padding: 2.5rem;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 40px 100px rgba(0,0,0,0.5);
+        }
+
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--cyan), var(--violet), var(--emerald));
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.875rem;
+            margin-bottom: 2rem;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 48px; height: 48px;
+            background: linear-gradient(135deg, var(--cyan), var(--violet));
+            border-radius: var(--radius-sm);
+            display: grid;
+            place-items: center;
+            box-shadow: 0 0 20px var(--cyan-glow), 0 4px 12px rgba(0,0,0,0.4);
+        }
+
+        .logo-icon svg { width: 26px; height: 26px; stroke: white; }
+
+        .logo-text { display: flex; flex-direction: column; text-align: left; }
+        .logo-name {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            background: linear-gradient(135deg, #ffffff, var(--cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+        }
+        .logo-sub {
+            font-size: 0.75rem;
+            font-family: var(--font-mono);
+            color: var(--text-muted);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .form-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .form-label svg { width: 16px; height: 16px; color: var(--cyan); }
+
+        .form-input {
+            padding: 0.875rem 1.125rem;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: var(--radius-md);
+            font-family: var(--font-display);
+            font-size: 0.9375rem;
+            color: var(--text-primary);
+            transition: all 0.3s var(--ease-out-expo);
+            outline: none;
+        }
+
+        .form-input:focus {
+            border-color: rgba(0,229,255,0.4);
+            background: rgba(0,229,255,0.03);
+            box-shadow: 0 0 0 3px rgba(0,229,255,0.08);
+        }
+
+        .form-input::placeholder { color: var(--text-muted); }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            padding: 0.875rem 2rem;
+            border-radius: 100px;
+            font-family: var(--font-display);
+            font-size: 0.9375rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.35s var(--ease-spring);
+            text-decoration: none;
+            width: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--cyan), #0099cc);
+            color: #05070f;
+            box-shadow: 0 0 30px var(--cyan-glow), 0 8px 24px rgba(0,0,0,0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 0 50px var(--cyan-glow), 0 16px 40px rgba(0,0,0,0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-google {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            color: var(--text-primary);
+            margin-top: 1rem;
+        }
+
+        .btn-google:hover {
+            background: var(--glass-hover);
+            border-color: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            font-family: var(--font-mono);
+        }
+
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--glass-border);
+        }
+
+        .error-message {
+            background: rgba(255,79,123,0.1);
+            border: 1px solid rgba(255,79,123,0.3);
+            color: var(--rose);
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .error-message.show { display: block; }
+
+        .signup-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .signup-link a {
+            color: var(--cyan);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .signup-link a:hover { text-decoration: underline; }
+
+        .loading {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(5,7,15,0.3);
+            border-top-color: #05070f;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="bg-mesh">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+    </div>
+
+    <div class="login-container">
+        <div class="login-card">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"></polyline></svg>
+                </div>
+                <div class="logo-text">
+                    <span class="logo-name">MindCare</span>
+                    <span class="logo-sub">AI Mental Wellness</span>
+                </div>
+            </div>
+
+            <h1>Welcome Back</h1>
+            <p class="subtitle">Sign in to access your mental wellness dashboard</p>
+
+            <div id="errorMessage" class="error-message"></div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="form-label">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                        Email
+                    </label>
+                    <input type="email" id="email" class="form-input" placeholder="Enter your email" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                        Password
+                    </label>
+                    <input type="password" id="password" class="form-input" placeholder="Enter your password" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="loginBtn">
+                    Sign In
+                </button>
+            </form>
+
+            <div class="divider">OR</div>
+
+            <button class="btn btn-google" id="googleSignIn">
+                <svg viewBox="0 0 24 24" width="18" height="18"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                Sign in with Google
+            </button>
+
+            <div class="signup-link">
+                Don't have an account? <a href="#" id="showSignup">Sign up</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // Initialize Supabase (only once globally)
+        if (!window.supabaseClient) {
+            const SUPABASE_URL = 'https://aocwwdntjckckcmlolet.supabase.co';
+            const SUPABASE_KEY = 'sb_publishable_93NHLdsZNdl9S6VzeelA8w_Hf2ES3aS';
+            window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        }
+        var supabase = window.supabaseClient;
+
+        // Save user profile to database
+        async function saveUserProfile(user) {
+            if (!user) return;
+            
+            try {
+                const { data: existingUser, error } = await supabase
+                    .from('profiles')
+                    .select('id')
+                    .eq('id', user.id)
+                    .maybeSingle();  // Use maybeSingle instead of single to avoid 406 error
+                
+                if (!existingUser) {
+                    const { error: insertError } = await supabase
+                        .from('profiles')
+                        .insert([{
+                            id: user.id,
+                            email: user.email,
+                            full_name: user.user_metadata?.full_name || user.email,
+                            avatar_url: user.user_metadata?.avatar_url
+                        }]);
+                    
+                    if (insertError) {
+                        console.log('Error saving profile:', insertError.message);
+                    } else {
+                        console.log('Profile created successfully!');
+                    }
+                }
+            } catch (err) {
+                console.log('Profile check error:', err.message);
+            }
+        }
+
+        // Prevent popup conflicts
+        let isAuthInProgress = false;
+
+        const loginForm = document.getElementById('loginForm');
+        const loginBtn = document.getElementById('loginBtn');
+        const googleBtn = document.getElementById('googleSignIn');
+        const errorMessage = document.getElementById('errorMessage');
+        const showSignup = document.getElementById('showSignup');
+
+        function showError(msg) {
+            errorMessage.textContent = msg;
+            errorMessage.classList.add('show');
+        }
+
+        function clearError() {
+            errorMessage.classList.remove('show');
+        }
+
+        function setLoading(loading) {
+            loginBtn.disabled = loading;
+            googleBtn.disabled = loading;
+            if (loading) {
+                loginBtn.innerHTML = '<span class="loading"></span> Signing in...';
+            } else {
+                loginBtn.innerHTML = isSignup ? 'Sign Up' : 'Sign In';
+            }
+        }
+
+        // Email/Password Login or Signup
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (isAuthInProgress) return;
+            isAuthInProgress = true;
+            
+            clearError();
+            setLoading(true);
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                let result;
+                if (isSignup) {
+                    // Sign up
+                    result = await supabase.auth.signUp({
+                        email: email,
+                        password: password,
+                        options: {
+                            emailRedirectTo: window.location.origin + '/frontend/index.html'
+                        }
+                    });
+                    if (result.error) throw result.error;
+                    console.log('Account created:', result.data.user);
+                    showError('Account created! Check your email to confirm.');
+                    setTimeout(() => {
+                        isSignup = false;
+                        document.querySelector('h1').textContent = 'Welcome Back';
+                        document.querySelector('.subtitle').textContent = 'Sign in to access your mental wellness dashboard';
+                        loginBtn.textContent = 'Sign In';
+                        showSignup.textContent = 'Sign up';
+                        showSignup.previousSibling.textContent = "Don't have an account? ";
+                        setLoading(false);
+                    }, 2000);
+                } else {
+                    // Sign in
+                    result = await supabase.auth.signInWithPassword({
+                        email: email,
+                        password: password
+                    });
+                    if (result.error) throw result.error;
+                    console.log('Logged in:', result.data.user);
+                    await saveUserProfile(result.data.user);
+                    setTimeout(() => {
+                        window.location.href = '/frontend/index.html';
+                    }, 100);
+                }
+            } catch (error) {
+                setLoading(false);
+                isAuthInProgress = false;
+                showError(error.message || 'Authentication failed');
+            }
+        });
+
+        // Google Sign In
+        googleBtn.addEventListener('click', async () => {
+            if (isAuthInProgress) return;
+            isAuthInProgress = true;
+            
+            clearError();
+            setLoading(true);
+            
+            try {
+                console.log('Starting Google OAuth...');
+                console.log('Redirect URL:', window.location.origin + '/frontend/index.html');
+                
+                const { data, error } = await supabase.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: {
+                        redirectTo: window.location.origin + '/frontend/index.html'
+                    }
+                });
+                
+                if (error) {
+                    console.error('OAuth Error:', error);
+                    throw error;
+                }
+                
+                console.log('Google sign in initiated', data);
+            } catch (error) {
+                console.error('Google Sign-In Error:', error);
+                setLoading(false);
+                isAuthInProgress = false;
+                
+                // Provide more detailed error messages
+                if (error.message.includes('provider')) {
+                    showError('Google provider not configured in Supabase. Contact admin.');
+                } else if (error.message.includes('redirect')) {
+                    showError('Redirect URL not configured. Check Supabase URL Configuration.');
+                } else {
+                    showError(error.message || 'Google sign-in failed. Check browser console for details.');
+                }
+            }
+        });
+
+        // Toggle signup mode
+        let isSignup = false;
+        showSignup.addEventListener('click', (e) => {
+            e.preventDefault();
+            isSignup = !isSignup;
+            
+            if (isSignup) {
+                document.querySelector('h1').textContent = 'Create Account';
+                document.querySelector('.subtitle').textContent = 'Sign up to start your wellness journey';
+                loginBtn.textContent = 'Sign Up';
+                showSignup.textContent = 'Already have an account? Sign in';
+                showSignup.previousSibling.textContent = ' ';
+            } else {
+                document.querySelector('h1').textContent = 'Welcome Back';
+                document.querySelector('.subtitle').textContent = 'Sign in to access your mental wellness dashboard';
+                loginBtn.textContent = 'Sign In';
+                showSignup.textContent = 'Sign up';
+                showSignup.previousSibling.textContent = "Don't have an account? ";
+            }
+        });
+
+        // Check if user is already logged in
+        (async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session && !isAuthInProgress) {
+                // Get user and save profile
+                const { data: { user } } = await supabase.auth.getUser();
+                if (user) {
+                    await saveUserProfile(user);
+                }
+                window.location.href = '/frontend/index.html';
+            }
+        })();
+    </script>
+</body>
+</html>

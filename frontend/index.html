@@ -1,0 +1,3079 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindCare — AI Mental Wellness</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,600;12..96,700;12..96,800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        /* =============================================
+           DESIGN SYSTEM
+        ============================================= */
+        :root {
+            --void: #05070f;
+            --deep: #080c1a;
+            --surface: #0d1224;
+            --glass: rgba(255,255,255,0.04);
+            --glass-border: rgba(255,255,255,0.08);
+            --glass-hover: rgba(255,255,255,0.07);
+
+            --cyan: #00e5ff;
+            --cyan-dim: rgba(0,229,255,0.15);
+            --cyan-glow: rgba(0,229,255,0.4);
+            --violet: #a855f7;
+            --violet-dim: rgba(168,85,247,0.15);
+            --emerald: #10d9a8;
+            --emerald-dim: rgba(16,217,168,0.15);
+            --rose: #ff4f7b;
+            --amber: #f59e0b;
+
+            --text-primary: #f0f4ff;
+            --text-secondary: rgba(200,210,255,0.6);
+            --text-muted: rgba(150,165,220,0.4);
+
+            --font-display: 'Bricolage Grotesque', sans-serif;
+            --font-mono: 'DM Mono', monospace;
+
+            --radius-sm: 8px;
+            --radius-md: 14px;
+            --radius-lg: 22px;
+            --radius-xl: 32px;
+
+            --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+            --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; font-size: 16px; }
+
+        body {            
+            font-family: var(--font-display);
+            background: var(--void);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* =============================================
+           ANIMATED MESH BACKGROUND
+        ============================================= */
+        .bg-mesh {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .bg-mesh::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(ellipse 80% 50% at 10% 0%, rgba(0,229,255,0.12) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 40% at 90% 20%, rgba(168,85,247,0.1) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 60% at 50% 100%, rgba(16,217,168,0.07) 0%, transparent 60%);
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0;
+            animation: orbFloat 18s ease-in-out infinite;
+        }
+
+        .orb-1 {
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(0,229,255,0.18), transparent 70%);
+            top: -200px; left: -150px;
+            animation-delay: 0s;
+        }
+        .orb-2 {
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(168,85,247,0.14), transparent 70%);
+            top: 30%; right: -100px;
+            animation-delay: -6s;
+        }
+        .orb-3 {
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(16,217,168,0.1), transparent 70%);
+            bottom: -100px; left: 30%;
+            animation-delay: -12s;
+        }
+
+        @keyframes orbFloat {
+            0%, 100% { opacity: 1; transform: translate(0,0) scale(1); }
+            33% { transform: translate(40px,-30px) scale(1.08); }
+            66% { transform: translate(-25px,40px) scale(0.94); }
+        }
+
+        /* Grid overlay */
+        .bg-grid {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background-image: 
+                linear-gradient(rgba(0,229,255,0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,229,255,0.025) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+            mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black, transparent);
+        }
+
+/* =============================================
+           ANNOUNCEMENT BAR
+        ============================================= */
+        .announcement-bar {
+            width: 100%;
+            background: rgba(0, 255, 255, 0.08);
+            backdrop-filter: blur(6px);
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+            overflow: hidden;
+            white-space: nowrap;
+            padding: 8px 0;
+        }
+
+.announcement-text {
+            display: inline-block;
+            padding-left: 100%;
+            color: #00f5ff;
+            font-weight: 500;
+            animation: scrollText 18s linear infinite;
+            transition: opacity 0.5s ease;
+        }
+
+        .fade-out {
+            opacity: 0;
+        }
+
+        .fade-in {
+            opacity: 1;
+        }
+
+        @keyframes scrollText {
+            from {
+                transform: translateX(0);
+            }
+            to {
+                transform: translateX(-100%);
+            }
+        }
+
+        /* =============================================
+           LAYOUT
+        ============================================= */
+        .container {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* =============================================
+           HEADER
+        ============================================= */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 1.25rem 0;
+            background: rgba(5,7,15,0.7);
+            backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            overflow: visible;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.875rem;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 42px; height: 42px;
+            background: linear-gradient(135deg, var(--cyan), var(--violet));
+            border-radius: var(--radius-sm);
+            display: grid;
+            place-items: center;
+            box-shadow: 0 0 20px var(--cyan-glow), 0 4px 12px rgba(0,0,0,0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo-icon::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent);
+        }
+
+        .logo-icon svg { width: 22px; height: 22px; stroke: white; z-index: 1; position: relative; }
+
+        .logo-text { display: flex; flex-direction: column; }
+        .logo-name {
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            background: linear-gradient(135deg, #ffffff, var(--cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+        }
+        .logo-sub {
+            font-size: 0.7rem;
+            font-family: var(--font-mono);
+            color: var(--text-muted);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .header-nav { display: flex; gap: 0.75rem; align-items: center; overflow: visible; }
+
+        .nav-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            overflow: visible;
+            line-height: 1;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 100px;
+            color: var(--text-secondary);
+            font-family: var(--font-display);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s var(--ease-out-expo);
+            text-decoration: none;
+        }
+
+        .nav-pill:hover {
+            background: var(--glass-hover);
+            border-color: rgba(0,229,255,0.3);
+            color: var(--cyan);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px rgba(0,229,255,0.1);
+        }
+
+        .nav-pill svg {
+            width: 22px;
+            height: 22px;
+            display: block;
+            overflow: visible;
+        }
+
+
+        /* =============================================
+           HERO
+        ============================================= */
+        .hero {
+            padding: 8rem 0 6rem;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 1rem;
+            background: var(--cyan-dim);
+            border: 1px solid rgba(0,229,255,0.3);
+            border-radius: 100px;
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            color: var(--cyan);
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            margin-bottom: 2.5rem;
+            animation: badgePulse 3s ease-in-out infinite;
+        }
+
+        @keyframes badgePulse {
+            0%, 100% { box-shadow: 0 0 0 0 var(--cyan-glow); }
+            50% { box-shadow: 0 0 0 8px transparent; }
+        }
+
+        .badge-dot {
+            width: 7px; height: 7px;
+            background: var(--cyan);
+            border-radius: 50%;
+            animation: dotBlink 1.5s ease-in-out infinite;
+            box-shadow: 0 0 8px var(--cyan);
+        }
+
+        @keyframes dotBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .hero-title {
+            font-size: clamp(3rem, 7vw, 6rem);
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            line-height: 1.05;
+            margin-bottom: 1.75rem;
+        }
+
+        .hero-title .line-1 { display: block; color: var(--text-primary); }
+        .hero-title .line-2 {
+            display: block;
+            background: linear-gradient(135deg, var(--cyan) 0%, var(--violet) 50%, var(--emerald) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 6s ease-in-out infinite;
+            background-size: 200% 200%;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .hero-subtitle {
+            max-width: 680px;
+            margin: 0 auto 3rem;
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            line-height: 1.75;
+            font-weight: 400;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 4rem;
+        }
+
+        /* =============================================
+           BUTTONS
+        ============================================= */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.875rem 2rem;
+            border-radius: 100px;
+            font-family: var(--font-display);
+            font-size: 0.9375rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.35s var(--ease-spring);
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn svg { width: 18px; height: 18px; transition: transform 0.3s var(--ease-spring); }
+        .btn:hover svg { transform: translateX(2px) scale(1.1); }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+            transition: opacity 0.3s;
+        }
+        .btn:hover::before { opacity: 1; }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--cyan), #0099cc);
+            color: #05070f;
+            box-shadow: 0 0 30px var(--cyan-glow), 0 8px 24px rgba(0,0,0,0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 0 50px var(--cyan-glow), 0 16px 40px rgba(0,0,0,0.4);
+        }
+
+        .btn-primary:active { transform: translateY(0) scale(0.98); }
+
+        .btn-ghost {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            color: var(--text-secondary);
+        }
+
+        .btn-ghost:hover {
+            background: var(--glass-hover);
+            border-color: rgba(168,85,247,0.4);
+            color: var(--violet);
+            transform: translateY(-3px);
+            box-shadow: 0 0 30px rgba(168,85,247,0.15);
+        }
+
+        .btn-secondary {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            color: var(--text-primary);
+            padding: 0.6rem 1.1rem;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.25s var(--ease-out-expo);
+        }
+
+        .btn-secondary:hover {
+            background: var(--glass-hover);
+            border-color: rgba(0,229,255,0.3);
+            color: var(--cyan);
+            transform: translateY(-2px);
+        }
+
+        .btn-emerald {
+            background: linear-gradient(135deg, var(--emerald), #059669);
+            color: white;
+            box-shadow: 0 0 20px rgba(16,217,168,0.3), 0 8px 24px rgba(0,0,0,0.4);
+        }
+
+        .btn-emerald:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 0 40px rgba(16,217,168,0.4), 0 16px 40px rgba(0,0,0,0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--rose), #cc2255);
+            color: white;
+            box-shadow: 0 0 20px rgba(255,79,123,0.3);
+        }
+        .btn-danger:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 40px rgba(255,79,123,0.4);
+        }
+
+        .btn-sm {
+            padding: 0.55rem 1.25rem;
+            font-size: 0.875rem;
+        }
+
+        /* =============================================
+           DISCLAIMER CARD
+        ============================================= */
+        .disclaimer {
+            max-width: 750px;
+            margin: 0 auto 2rem;
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+            padding: 1.25rem 1.5rem;
+            background: rgba(255,79,123,0.06);
+            border: 1px solid rgba(255,79,123,0.2);
+            border-radius: var(--radius-lg);
+            text-align: left;
+            backdrop-filter: blur(10px);
+        }
+
+        .disclaimer-icon {
+            width: 36px; height: 36px;
+            background: rgba(255,79,123,0.15);
+            border-radius: var(--radius-sm);
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+            color: var(--rose);
+        }
+
+        .disclaimer-icon svg { width: 18px; height: 18px; }
+
+        .disclaimer p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .disclaimer strong { color: var(--rose); }
+
+        /* =============================================
+           STATS ROW
+        ============================================= */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5px;
+            background: var(--glass-border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+            max-width: 700px;
+            margin: 0 auto 7rem;
+        }
+
+        .stat-item {
+            padding: 1.5rem 2rem;
+            background: var(--surface);
+            text-align: center;
+            transition: background 0.3s;
+        }
+
+        .stat-item:hover { background: var(--glass-hover); }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            background: linear-gradient(135deg, var(--cyan), var(--violet));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-top: 0.25rem;
+        }
+
+        /* =============================================
+           MODE TOGGLE SECTION
+        ============================================= */
+        .mode-section { margin-bottom: 3rem; }
+
+        .mode-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.75rem 2rem;
+            background: var(--surface);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
+            backdrop-filter: blur(10px);
+            transition: all 0.4s var(--ease-out-expo);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mode-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+            opacity: 0.5;
+        }
+
+        .mode-card:hover {
+            border-color: rgba(0,229,255,0.2);
+            box-shadow: 0 8px 40px rgba(0,0,0,0.3), 0 0 0 1px rgba(0,229,255,0.05);
+        }
+
+        .mode-left { display: flex; align-items: center; gap: 1.25rem; }
+
+        .mode-chip {
+            width: 52px; height: 52px;
+            background: linear-gradient(135deg, var(--cyan-dim), var(--violet-dim));
+            border: 1px solid rgba(0,229,255,0.2);
+            border-radius: var(--radius-md);
+            display: grid;
+            place-items: center;
+            color: var(--cyan);
+        }
+
+        .mode-chip svg { width: 26px; height: 26px; }
+
+        .mode-label {
+            font-size: 1.125rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .mode-desc {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-top: 0.2rem;
+        }
+
+        /* Custom Toggle */
+        .toggle-wrap { position: relative; display: inline-block; }
+        .toggle-input { opacity: 0; width: 0; height: 0; position: absolute; }
+
+        .toggle-track {
+            display: flex;
+            align-items: center;
+            width: 130px;
+            height: 44px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid var(--glass-border);
+            border-radius: 100px;
+            padding: 4px;
+            cursor: pointer;
+            transition: all 0.4s var(--ease-out-expo);
+            position: relative;
+        }
+
+        .toggle-input:checked ~ .toggle-track {
+            background: linear-gradient(135deg, rgba(16,217,168,0.2), rgba(0,229,255,0.1));
+            border-color: rgba(16,217,168,0.4);
+            box-shadow: 0 0 20px rgba(16,217,168,0.2);
+        }
+
+        .toggle-thumb {
+            position: absolute;
+            left: 4px;
+            width: 36px; height: 36px;
+            background: white;
+            border-radius: 100px;
+            transition: all 0.4s var(--ease-spring);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .toggle-input:checked ~ .toggle-track .toggle-thumb {
+            left: calc(100% - 40px);
+            background: linear-gradient(135deg, var(--emerald), var(--cyan));
+        }
+
+        .toggle-labels {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            padding: 0 0.5rem 0 2.75rem;
+            font-size: 0.75rem;
+            font-family: var(--font-mono);
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            color: var(--text-muted);
+            pointer-events: none;
+            z-index: 1;
+            position: relative;
+        }
+
+        .toggle-input:checked ~ .toggle-track .toggle-labels { color: var(--emerald); }
+
+        /* =============================================
+           TABS
+        ============================================= */
+        .tabs-section { margin-bottom: 3rem; }
+
+        .tabs-nav {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: var(--surface);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            margin-bottom: 1.5rem;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            background: transparent;
+            border: none;
+            border-radius: var(--radius-md);
+            color: var(--text-muted);
+            font-family: var(--font-display);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s var(--ease-out-expo);
+            white-space: nowrap;
+        }
+
+        .tab-btn svg { width: 17px; height: 17px; }
+
+        .tab-btn:hover {
+            color: var(--text-secondary);
+            background: var(--glass);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, rgba(0,229,255,0.15), rgba(168,85,247,0.1));
+            border: 1px solid rgba(0,229,255,0.25);
+            color: var(--cyan);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+
+        /* =============================================
+           INPUT CARDS
+        ============================================= */
+        .tab-pane { display: none; animation: paneFadeIn 0.4s var(--ease-out-expo); }
+        .tab-pane.active { display: block; }
+
+        @keyframes paneFadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .input-card {
+            background: var(--surface);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
+            padding: 2.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s var(--ease-out-expo);
+        }
+
+        .input-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--cyan), var(--violet), transparent);
+            opacity: 0.4;
+        }
+
+        .input-card:hover {
+            border-color: rgba(0,229,255,0.15);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .card-chip {
+            width: 52px; height: 52px;
+            background: linear-gradient(135deg, var(--cyan), var(--violet));
+            border-radius: var(--radius-md);
+            display: grid;
+            place-items: center;
+            color: white;
+            flex-shrink: 0;
+            box-shadow: 0 0 20px rgba(0,229,255,0.3);
+        }
+
+        .card-chip svg { width: 26px; height: 26px; }
+
+        .card-title h3 {
+            font-size: 1.375rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .card-title p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        /* =============================================
+           CAMERA
+        ============================================= */
+        .camera-wrap {
+            position: relative;
+            max-width: 580px;
+            margin: 0 auto 2rem;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            background: rgba(0,0,0,0.4);
+            aspect-ratio: 4/3;
+            border: 1px solid var(--glass-border);
+        }
+
+        .camera-preview {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .camera-placeholder {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            color: var(--text-muted);
+        }
+
+        .camera-placeholder svg { width: 64px; height: 64px; opacity: 0.3; }
+        .camera-placeholder p { font-size: 0.9rem; }
+
+        /* Scanning animation overlay */
+        .scan-line {
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+            animation: scanDown 3s ease-in-out infinite;
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        .camera-wrap.active .scan-line { opacity: 1; }
+
+        @keyframes scanDown {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+
+        .corner { position: absolute; width: 20px; height: 20px; }
+        .corner-tl { top: 12px; left: 12px; border-top: 2px solid var(--cyan); border-left: 2px solid var(--cyan); border-radius: 4px 0 0 0; }
+        .corner-tr { top: 12px; right: 12px; border-top: 2px solid var(--cyan); border-right: 2px solid var(--cyan); border-radius: 0 4px 0 0; }
+        .corner-bl { bottom: 12px; left: 12px; border-bottom: 2px solid var(--cyan); border-left: 2px solid var(--cyan); border-radius: 0 0 0 4px; }
+        .corner-br { bottom: 12px; right: 12px; border-bottom: 2px solid var(--cyan); border-right: 2px solid var(--cyan); border-radius: 0 0 4px 0; }
+
+        .camera-controls { display: flex; gap: 1rem; justify-content: center; }
+        .camera-active-controls { display: flex; gap: 1rem; }
+
+        /* =============================================
+           UPLOAD
+        ============================================= */
+        .upload-zone {
+            border: 2px dashed rgba(255,255,255,0.1);
+            border-radius: var(--radius-lg);
+            padding: 3rem 2rem;
+            text-align: center;
+            transition: all 0.35s var(--ease-out-expo);
+            background: rgba(0,0,0,0.2);
+            cursor: pointer;
+        }
+
+        .upload-zone:hover, .upload-zone.drag-over {
+            border-color: rgba(0,229,255,0.4);
+            background: rgba(0,229,255,0.03);
+            box-shadow: 0 0 40px rgba(0,229,255,0.08) inset;
+        }
+
+        .upload-icon-wrap {
+            width: 80px; height: 80px;
+            background: linear-gradient(135deg, var(--cyan-dim), var(--violet-dim));
+            border: 1px solid rgba(0,229,255,0.2);
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            margin: 0 auto 1.5rem;
+            color: var(--cyan);
+            transition: all 0.35s var(--ease-spring);
+        }
+
+        .upload-zone:hover .upload-icon-wrap {
+            transform: scale(1.1) translateY(-3px);
+            box-shadow: 0 0 30px var(--cyan-glow);
+        }
+
+        .upload-icon-wrap svg { width: 36px; height: 36px; }
+
+        .upload-zone h4 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-zone > p { color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1rem; }
+
+        .upload-hint {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            margin-top: 1rem;
+        }
+
+        .image-preview { text-align: center; }
+        .image-preview img {
+            max-width: 100%;
+            max-height: 320px;
+            border-radius: var(--radius-lg);
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--glass-border);
+        }
+
+        .preview-actions { display: flex; gap: 1rem; justify-content: center; }
+
+        /* =============================================
+           FORMS
+        ============================================= */
+        .form-group { display: flex; flex-direction: column; gap: 0.6rem; }
+        .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; }
+
+        .form-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            letter-spacing: 0.01em;
+        }
+
+        .form-label svg { width: 16px; height: 16px; color: var(--cyan); }
+
+        .form-input {
+            padding: 0.875rem 1.125rem;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: var(--radius-md);
+            font-family: var(--font-display);
+            font-size: 0.9375rem;
+            color: var(--text-primary);
+            transition: all 0.3s var(--ease-out-expo);
+            outline: none;
+        }
+
+        .form-input:focus {
+            border-color: rgba(0,229,255,0.4);
+            background: rgba(0,229,255,0.03);
+            box-shadow: 0 0 0 3px rgba(0,229,255,0.08);
+        }
+
+        .form-input::placeholder { color: var(--text-muted); }
+
+        .select-wrap { position: relative; }
+        .select-wrap select {
+            appearance: none;
+            width: 100%;
+            padding: 0.875rem 2.5rem 0.875rem 1.125rem;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: var(--radius-md);
+            font-family: var(--font-display);
+            font-size: 0.9375rem;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s;
+            outline: none;
+        }
+
+        .select-wrap select:focus {
+            border-color: rgba(0,229,255,0.4);
+            box-shadow: 0 0 0 3px rgba(0,229,255,0.08);
+        }
+
+        .select-wrap select option { background: var(--deep); }
+
+        .select-arrow {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px; height: 16px;
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
+        .hint { font-size: 0.78rem; color: var(--text-muted); font-family: var(--font-mono); }
+
+        /* Slider */
+        .slider-wrap { padding: 0.5rem 0; }
+
+        .range-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 100px;
+            background: linear-gradient(to right, var(--emerald) 0%, var(--amber) 50%, var(--rose) 100%);
+            outline: none;
+            cursor: pointer;
+        }
+
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 22px; height: 22px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid var(--cyan);
+            box-shadow: 0 0 12px var(--cyan-glow), 0 2px 8px rgba(0,0,0,0.4);
+            cursor: pointer;
+            transition: all 0.25s var(--ease-spring);
+        }
+
+        .range-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 20px var(--cyan-glow);
+        }
+
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.6rem;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+        }
+
+        .slider-value {
+            font-size: 1.375rem;
+            font-weight: 800;
+            color: var(--cyan);
+            letter-spacing: -0.04em;
+        }
+            
+        /* =============================================
+           RESULTS
+        ============================================= */
+        .results-section {
+            margin-top: 3rem;
+            animation: paneFadeIn 0.5s var(--ease-out-expo);
+        }
+
+        .results-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+
+        .results-header h2 {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.75rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+        }
+
+        .results-header h2 svg { width: 28px; height: 28px; color: var(--cyan); }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px;
+            background: var(--glass-border);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+            margin-bottom: 1.5rem;
+        }
+
+        .result-card {
+            padding: 2rem;
+            background: var(--surface);
+            display: flex;
+            align-items: flex-start;
+            gap: 1.25rem;
+            transition: background 0.3s;
+        }
+
+        .result-card:hover { background: var(--glass-hover); }
+
+        .result-icon {
+            width: 48px; height: 48px;
+            border-radius: var(--radius-md);
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+        }
+
+        .result-icon svg { width: 24px; height: 24px; }
+
+        .emotion-icon { background: linear-gradient(135deg, rgba(255,79,123,0.2), rgba(249,115,22,0.2)); color: #fb923c; }
+        .stress-icon { background: linear-gradient(135deg, rgba(245,158,11,0.2), rgba(255,79,123,0.2)); color: var(--amber); }
+        .confidence-icon { background: linear-gradient(135deg, rgba(0,229,255,0.2), rgba(168,85,247,0.2)); color: var(--cyan); }
+
+        .result-label {
+            font-size: 0.72rem;
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+        }
+
+        .result-value {
+            font-size: 1.875rem;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            color: var(--text-primary);
+            line-height: 1;
+        }
+
+        .result-sub { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.4rem; }
+
+        .progress-bar {
+            height: 4px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 100px;
+            margin-top: 0.75rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--emerald), var(--rose));
+            border-radius: 100px;
+            transition: width 0.8s var(--ease-out-expo);
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-card {
+            padding: 1.75rem;
+            background: var(--surface);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            transition: all 0.3s;
+        }
+
+        .detail-card:hover {
+            border-color: rgba(0,229,255,0.15);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+        }
+
+        .detail-card h3 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .detail-card h3 svg { width: 18px; height: 18px; color: var(--cyan); }
+
+        .analysis-text {
+            font-size: 0.9375rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .suggestions-list { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; }
+
+        .suggestions-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.875rem 1rem;
+            background: rgba(0,0,0,0.2);
+            border-radius: var(--radius-md);
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            border: 1px solid rgba(255,255,255,0.04);
+            transition: all 0.3s;
+        }
+
+        .suggestions-list li:hover {
+            border-color: rgba(16,217,168,0.2);
+            background: rgba(16,217,168,0.05);
+        }
+
+        .check-badge {
+            flex-shrink: 0;
+            width: 22px; height: 22px;
+            background: linear-gradient(135deg, var(--emerald), var(--cyan));
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: white;
+        }
+
+        .chart-card {
+            padding: 2rem;
+            background: var(--surface);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
+        }
+
+        .chart-card h3 {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-card h3 svg { width: 18px; height: 18px; color: var(--cyan); }
+
+        .chart-wrap { position: relative; height: 280px; }
+
+        /* =============================================
+           LOADING
+        ============================================= */
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(5,7,15,0.85);
+            backdrop-filter: blur(12px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            z-index: 200;
+        }
+
+        .spinner {
+            width: 64px; height: 64px;
+            border: 3px solid rgba(0,229,255,0.1);
+            border-top: 3px solid var(--cyan);
+            border-right: 3px solid var(--violet);
+            border-radius: 50%;
+            animation: spin 0.9s linear infinite;
+            box-shadow: 0 0 30px var(--cyan-glow);
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .loading-text {
+            font-size: 1.125rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--cyan), var(--violet));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .loading-sub { font-size: 0.875rem; color: var(--text-muted); font-family: var(--font-mono); }
+
+        /* =============================================
+           NOTIFICATION
+        ============================================= */
+        .notif {
+            position: fixed;
+            top: 120px;
+            right: 1.5rem;
+            max-width: 380px;
+            padding: 1rem 1.25rem;
+            background: var(--surface);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: flex-start;
+            gap: 0.875rem;
+            z-index: 300;
+            animation: slideInNotif 0.4s var(--ease-out-expo);
+            backdrop-filter: blur(20px);
+        }
+
+        @keyframes slideInNotif {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .notif.error { border-color: rgba(255,79,123,0.3); }
+        .notif.error .notif-icon { background: rgba(255,79,123,0.15); color: var(--rose); }
+        .notif.success { border-color: rgba(16,217,168,0.3); }
+        .notif.success .notif-icon { background: rgba(16,217,168,0.15); color: var(--emerald); }
+
+        .notif-icon {
+            width: 36px; height: 36px;
+            background: var(--cyan-dim);
+            border-radius: var(--radius-sm);
+            display: grid;
+            place-items: center;
+            color: var(--cyan);
+            flex-shrink: 0;
+        }
+
+        .notif-icon svg { width: 18px; height: 18px; }
+        .notif-msg { flex: 1; font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5; }
+
+        .notif-close {
+            width: 28px; height: 28px;
+            background: transparent;
+            border: none;
+            border-radius: var(--radius-sm);
+            color: var(--text-muted);
+            cursor: pointer;
+            display: grid;
+            place-items: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        .notif-close:hover { background: var(--glass); color: var(--text-primary); }
+        .notif-close svg { width: 16px; height: 16px; }
+
+        /* =============================================
+           FOOTER
+        ============================================= */
+        footer {
+            margin-top: 6rem;
+            border-top: 1px solid var(--glass-border);
+            background: var(--deep);
+        }
+
+        .footer-inner {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 3rem;
+            padding: 4rem 0 3rem;
+        }
+
+        .footer-brand .logo { margin-bottom: 1rem; }
+
+        .footer-desc {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        .footer-col h5 {
+            font-size: 0.78rem;
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 1.25rem;
+        }
+
+        .footer-links { display: flex; flex-direction: column; gap: 0.75rem; }
+
+        .footer-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.25s;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-family: var(--font-display);
+        }
+
+        .footer-link svg { width: 15px; height: 15px; }
+
+        .footer-link:hover { color: var(--cyan); }
+
+        .terms-check {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.625rem;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .terms-check input { 
+            width: 16px; height: 16px; 
+            cursor: pointer;
+            accent-color: var(--cyan);
+        }
+
+        .terms-check label { cursor: pointer; line-height: 1.5; }
+
+        .footer-bottom {
+            border-top: 1px solid var(--glass-border);
+            padding: 1.5rem 0;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+        }
+
+        /* =============================================
+           MODALS
+        ============================================= */
+        .modal {
+            position: fixed;
+            inset: 0;
+            z-index: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .modal-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
+        }
+
+        .modal-content {
+            position: relative;
+            z-index: 1;
+            max-width: 600px;
+            width: 100%;
+            max-height: 85vh;
+            background: var(--surface);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
+            box-shadow: 0 40px 100px rgba(0,0,0,0.6);
+            display: flex;
+            flex-direction: column;
+            animation: scaleIn 0.4s var(--ease-spring);
+            overflow: hidden;
+        }
+
+        .modal-large { max-width: 780px; }
+
+        @keyframes scaleIn {
+            from { transform: scale(0.9) translateY(20px); opacity: 0; }
+            to { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        .modal-top-line {
+            height: 3px;
+            background: linear-gradient(90deg, var(--cyan), var(--violet), var(--emerald));
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .modal-header h2 {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.375rem;
+            font-weight: 700;
+        }
+
+        .modal-header h2 svg { width: 24px; height: 24px; color: var(--cyan); }
+
+        .modal-close {
+            width: 36px; height: 36px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-sm);
+            display: grid;
+            place-items: center;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: all 0.25s;
+        }
+
+        .modal-close:hover { background: rgba(255,79,123,0.15); color: var(--rose); border-color: rgba(255,79,123,0.3); }
+        .modal-close svg { width: 16px; height: 16px; }
+
+        .modal-body {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .modal-body h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--cyan);
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        .modal-body h3:first-child { margin-top: 0; }
+
+        .modal-body p { font-size: 0.9375rem; color: var(--text-secondary); line-height: 1.7; margin-bottom: 0.75rem; }
+
+        .modal-body ul {
+            padding-left: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .modal-body li {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 0.4rem;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+            padding: 1.25rem 2rem;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        /* Contact cards in modal */
+        .contact-card {
+            padding: 1.25rem;
+            background: rgba(0,0,0,0.2);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
+            margin-bottom: 0.75rem;
+            transition: all 0.3s;
+        }
+
+        .contact-card:hover { border-color: rgba(0,229,255,0.2); }
+
+        .contact-name { font-weight: 700; font-size: 1rem; margin-bottom: 0.2rem; }
+        .contact-role { font-size: 0.85rem; color: var(--cyan); margin-bottom: 0.75rem; }
+
+        .contact-email {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.35rem 0.75rem;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 100px;
+            transition: all 0.25s;
+        }
+
+        .contact-email:hover { border-color: var(--cyan); color: var(--cyan); }
+        .contact-email svg { width: 14px; height: 14px; }
+
+        /* Emergency grid */
+        .emergency-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem; margin-top: 0.75rem; }
+
+        .emergency-card {
+            padding: 1.25rem;
+            background: rgba(0,229,255,0.04);
+            border: 1px solid rgba(0,229,255,0.12);
+            border-radius: var(--radius-md);
+            transition: all 0.3s;
+        }
+
+        .emergency-card:hover { border-color: rgba(0,229,255,0.3); transform: translateY(-2px); }
+
+        .emergency-country {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .emergency-country svg { width: 16px; height: 16px; color: var(--cyan); }
+
+        .resource-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.3rem 0;
+        }
+
+        .resource-label { font-size: 0.78rem; color: var(--text-muted); }
+
+        .resource-link {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--cyan);
+            text-decoration: none;
+            padding: 0.2rem 0.5rem;
+            background: var(--cyan-dim);
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .resource-link:hover { background: var(--cyan); color: var(--void); }
+
+        /* Resource quick-links cards */
+        .resource-card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 0;
+            margin: 1.5rem 0 2.5rem;
+        }
+
+        .resource-card{
+            background:#111;
+            padding:16px;
+            margin:12px;
+            border-radius:10px;
+            transition:0.3s;
+        }
+
+        .resource-card:hover{
+            transform:translateY(-4px);
+            box-shadow:0 6px 18px rgba(0,0,0,0.4);
+        }
+
+        .resource-card h3{
+            margin-bottom:6px;
+        }
+
+        .resource-card p{
+            font-size:14px;
+            opacity:0.8;
+        }
+
+        .resource-card a{
+            display:inline-block;
+            margin-top:8px;
+            color:#4da3ff;
+            text-decoration:none;
+        }
+
+        /* Skills grid in about */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 0.5rem;
+            margin: 0.75rem 0;
+        }
+
+        .skill-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.625rem 0.875rem;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-sm);
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            transition: all 0.25s;
+        }
+
+        .skill-item:hover { border-color: rgba(0,229,255,0.2); color: var(--cyan); }
+        .skill-item svg { width: 15px; height: 15px; color: var(--cyan); flex-shrink: 0; }
+
+        .mission-box {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.25rem;
+            background: linear-gradient(135deg, rgba(0,229,255,0.06), rgba(168,85,247,0.06));
+            border-left: 3px solid var(--cyan);
+            border-radius: var(--radius-md);
+            margin-top: 1rem;
+        }
+
+        .mission-box svg { width: 28px; height: 28px; color: var(--rose); flex-shrink: 0; }
+        .mission-box p { font-style: italic; color: var(--text-primary); font-size: 0.95rem; margin: 0; }
+
+        /* =============================================
+           UTILITIES
+        ============================================= */
+        .hidden { display: none !important; }
+        .file-input { display: none; }
+        .file-name { font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-mono); margin-top: 0.5rem; }
+        .form-modern { display: flex; flex-direction: column; gap: 1.5rem; }
+
+        /* =============================================
+           RESPONSIVE
+        ============================================= */
+        @media (max-width: 900px) {
+            .footer-inner { grid-template-columns: 1fr 1fr; }
+            .results-grid { grid-template-columns: 1fr; }
+            .detail-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 650px) {
+            .hero { padding: 5rem 0 4rem; }
+            .footer-inner { grid-template-columns: 1fr; }
+            .hero-cta { flex-direction: column; align-items: center; }
+            .stats-row { grid-template-columns: 1fr; }
+            .header-nav .nav-pill span { display: none; }
+            .input-card { padding: 1.5rem; }
+            
+            /* AI Assistant Panel - Responsive */
+            .ai-assistant {
+                width: calc(100% - 40px);
+                right: 20px;
+                left: 20px;
+                bottom: 20px;
+            }
+        }
+
+/* =============================================
+           AI ASSISTANT PANEL
+        ============================================= */
+        .ai-assistant {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 340px;
+            background: #0f172a;
+            border: 2px solid #00f0ff;
+            border-radius: 16px;
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.4);
+            padding: 18px;
+            transition: all 0.4s ease;
+        }
+
+        .ai-assistant.hide {
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
+        }
+
+        .ai-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .ai-close-btn {
+            background: transparent;
+            border: none;
+            color: #ccc;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .ai-close-btn:hover {
+            color: #ff4d4d;
+        }
+
+        .ai-message {
+            min-height: 50px;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        /* Voice animation bars */
+        .voice-animation {
+            display: none;
+            margin-top: 10px;
+            display: flex;
+            gap: 5px;
+        }
+
+        .voice-animation span {
+            width: 5px;
+            height: 15px;
+            background: #00f0ff;
+            border-radius: 4px;
+            animation: voiceWave 0.8s infinite ease-in-out;
+        }
+
+        .voice-animation span:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .voice-animation span:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        @keyframes voiceWave {
+            0%, 100% { height: 10px; }
+            50% { height: 25px; }
+        }
+
+        /* Settings Panel */
+        .settings-panel {
+            position: fixed;
+            right: -350px;
+            top: 0;
+            width: 320px;
+            height: 100%;
+            background: #111827;
+            box-shadow: -5px 0 25px rgba(0,0,0,0.5);
+            transition: right 0.4s ease;
+            z-index: 2000;
+            padding: 20px;
+            color: white;
+        }
+
+        .settings-panel.active {
+            right: 0;
+        }
+
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #00f5ff;
+            margin-bottom: 20px;
+        }
+
+        .settings-header h3 {
+            margin: 0;
+            font-size: 1.25rem;
+        }
+
+        .settings-content hr {
+            border: none;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            margin: 20px 0;
+        }
+
+        .setting-item {
+            margin: 20px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .setting-item label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .setting-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--cyan);
+            cursor: pointer;
+        }
+
+        .logout-btn {
+            width: 100%;
+            padding: 12px;
+            background: #ff4d4d;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: background 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #ff1a1a;
+        }
+
+        .close-btn {
+            cursor: pointer;
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            transition: color 0.3s;
+        }
+
+        .close-btn:hover {
+            color: var(--text-primary);
+        }
+    </style>
+</head>
+<body>
+
+<!-- Notification Stack (toast container) -->
+<div id="notification-stack" aria-live="polite" aria-atomic="true"
+     style="position:fixed; top:1.25rem; right:1.25rem; display:flex; flex-direction:column; gap:0.75rem; z-index:9999; pointer-events:none;">
+</div>
+
+<!-- Background -->
+<div class="bg-mesh">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+</div>
+<div class="bg-grid"></div>
+
+<!-- Header -->
+<header>
+    <div class="container">
+        <div class="header-inner">
+
+            <!-- Logo -->
+            <a href="#" class="logo">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <polyline points="22,12 18,12 15,21 9,3 6,12 2,12"></polyline>
+                    </svg>
+                </div>
+                <div class="logo-text">
+                    <span class="logo-name">MindCare</span>
+                    <span class="logo-sub">AI Mental Wellness</span>
+                </div>
+            </a>
+
+            <!-- Navigation -->
+            <nav class="header-nav">
+
+                <!-- Help Button -->
+                <button class="nav-pill" id="navHelp">
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="m9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+                        <line x1="12" y1="17" x2="12.01" y2="17"/>
+                    </svg>
+                    <span>Help</span>
+                </button>
+
+                <!-- Settings Button (Fixed Proper Icon Size) -->
+                <button id="settingsBtn" class="nav-pill">
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none"
+                        stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06
+                        a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06
+                        a1.65 1.65 0 0 0-1.82-.33
+                        1.65 1.65 0 0 0-1 1.51V21
+                        a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09
+                        a1.65 1.65 0 0 0-1-1.51
+                        1.65 1.65 0 0 0-1.82.33l-.06.06
+                        a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06
+                        a1.65 1.65 0 0 0 .33-1.82
+                        1.65 1.65 0 0 0-1.51-1H3
+                        a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09
+                        a1.65 1.65 0 0 0 1.51-1
+                        1.65 1.65 0 0 0-.33-1.82l-.06-.06
+                        a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06
+                        a1.65 1.65 0 0 0 1.82.33h0
+                        a1.65 1.65 0 0 0 1-1.51V3
+                        a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09
+                        a1.65 1.65 0 0 0 1 1.51
+                        1.65 1.65 0 0 0 1.82-.33l.06-.06
+                        a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06
+                        a1.65 1.65 0 0 0-.33 1.82v0
+                        a1.65 1.65 0 0 0 1.51 1H21
+                        a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09
+                        a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                    <span>Settings</span>
+                </button>
+
+            </nav>
+        </div>
+    </div>
+</header>
+
+<!-- Scrolling Announcement Bar -->
+<div class="announcement-bar">
+  <div class="announcement-text" id="dynamicGreeting"></div>
+</div>
+
+<!-- Supabase Auth - Load in body for proper initialization -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+    // Initialize Supabase (only once globally)
+    if (!window.supabaseClient) {
+        const SUPABASE_URL = 'https://aocwwdntjckckcmlolet.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_93NHLdsZNdl9S6VzeelA8w_Hf2ES3aS';
+        window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    }
+    var supabase = window.supabaseClient;
+
+    // Save user profile to database
+    async function saveUserProfile(user) {
+        if (!user) return;
+        
+        try {
+            const { data: existingUser, error } = await supabase
+                .from('profiles')
+                .select('id')
+                .eq('id', user.id)
+                .maybeSingle();
+            
+            if (!existingUser) {
+                const { error: insertError } = await supabase
+                    .from('profiles')
+                    .insert([{
+                        id: user.id,
+                        email: user.email,
+                        full_name: user.user_metadata?.full_name || user.email,
+                        avatar_url: user.user_metadata?.avatar_url
+                    }]);
+                
+                if (insertError) {
+                    console.log('Error saving profile:', insertError.message);
+                } else {
+                    console.log('Profile created successfully!');
+                }
+            }
+        } catch (err) {
+            console.log('Profile check error:', err.message);
+        }
+    }
+
+    async function handleLogout() {
+        // Show confirmation dialog
+        const confirmed = confirm('Are you sure you want to logout?');
+        
+        if (!confirmed) {
+            return; // User clicked Cancel
+        }
+        
+        try {
+            const { error } = await supabase.auth.signOut();
+            if (error) throw error;
+            console.log('User signed out successfully');
+            // Redirect to login page
+            window.location.href = 'login.html';
+        } catch (error) {
+            console.error('Logout Error:', error);
+            alert('Failed to logout: ' + error.message);
+        }
+    }
+
+    // Attach event listener when DOM is ready
+    document.addEventListener('DOMContentLoaded', () => {
+        const logoutBtn = document.getElementById('logout-main');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', handleLogout);
+            console.log('Logout button event listener attached');
+        } else {
+            console.error('Logout button not found');
+        }
+
+        // Check if user is logged in (session persistence)
+        (async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) {
+                // User is not logged in, redirect to login
+                console.log('No user session found, redirecting to login');
+                window.location.href = 'login.html';
+            } else {
+                console.log('User is logged in:', session.user.email);
+                await saveUserProfile(session.user);
+                
+                // Also get user directly for extra reliability
+                const { data: { user } } = await supabase.auth.getUser();
+                if (user) {
+                    await saveUserProfile(user);
+                }
+            }
+        })();
+    });
+</script>
+
+<!-- Hero -->
+<section class="hero">
+    <div class="container">
+        <div class="hero-badge">
+            <span class="badge-dot"></span>
+            AI-Powered Mental Wellness Platform
+        </div>
+
+        <h1 class="hero-title">
+            <span class="line-1">Understand Your</span>
+            <span class="line-2">Mental State</span>
+        </h1>
+
+        <p class="hero-subtitle">
+            Advanced AI technology analyzes facial expressions, physiological data,
+            and self-reported metrics to provide deep insights into your stress levels and emotional wellbeing.
+        </p>
+
+        <div class="hero-cta">
+            <a href="#tabs-section" class="btn btn-primary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="23,7 16,12 23,17 23,7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+                Start Analysis
+            </a>
+            <button class="btn btn-ghost" id="openAbout">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                Learn More
+            </button>
+        </div>
+
+        <div class="disclaimer">
+            <div class="disclaimer-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            </div>
+            <p><strong>Important Notice:</strong> This tool is designed for wellness monitoring and educational purposes only. It is not a substitute for professional medical diagnosis or treatment. Always consult qualified healthcare providers for medical concerns.</p>
+        </div>
+
+        <div class="stats-row">
+            <div class="stat-item">
+                <div class="stat-number">4</div>
+                <div class="stat-label">Analysis Modes</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">ViT</div>
+                <div class="stat-label">AI Model</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">0%</div>
+                <div class="stat-label">Data Stored</div>
+            </div>
+        </div>
+
+        <!-- Resource quick links -->
+        <div class="resource-card-grid" aria-label="Helpful resources">
+            <div class="resource-card">
+                <h3>Spotify</h3>
+                <p>Listen to music, podcasts, and curated playlists while working.</p>
+                <a href="https://open.spotify.com" target="_blank" rel="noopener">Open Spotify</a>
+            </div>
+
+            <div class="resource-card">
+                <h3>World Monitor</h3>
+                <p>Live global intelligence covering geopolitics, military activity, conflicts, and infrastructure developments worldwide.</p>
+                <a href="https://worldmonitor.app" target="_blank" rel="noopener">Open World Monitor</a>
+            </div>
+
+            <div class="resource-card">
+                <h3>Tech Monitor</h3>
+                <p>Track the latest in startups, AI/ML breakthroughs, cloud computing, and cybersecurity trends.</p>
+                <a href="https://tech.worldmonitor.app" target="_blank" rel="noopener">Open Tech Monitor</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Main App -->
+<div class="container" id="tabs-section">
+
+    <!-- Mode Toggle -->
+    <div class="mode-section">
+        <div class="mode-card">
+            <div class="mode-left">
+                <div class="mode-chip">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+                </div>
+                <div>
+                    <div class="mode-label" id="modeLabel">Demo Mode</div>
+                    <div class="mode-desc" id="modeDescription">Using simulated AI responses for demonstration</div>
+                </div>
+            </div>
+            <label class="toggle-wrap">
+                <input type="checkbox" id="mlModeToggle" class="toggle-input">
+                <div class="toggle-track">
+                    <div class="toggle-thumb"></div>
+                    <div class="toggle-labels">
+                        <span id="toggleOffLabel">Demo</span>
+                        <span id="toggleOnLabel">Live</span>
+                    </div>
+                </div>
+            </label>
+        </div>
+    </div>
+
+    <!-- Loading -->
+    <div id="loading" class="loading-overlay hidden">
+        <div class="spinner"></div>
+        <div class="loading-text">Analyzing your data...</div>
+        <div class="loading-sub">This may take a moment</div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notif notification-container hidden">
+        <div class="notif-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        </div>
+        <div class="notif-msg notification-message"></div>
+        <button class="notif-close notification-close">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs-section">
+        <div class="tabs-nav">
+            <button class="tab-btn active" data-tab="camera">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23,7 16,12 23,17 23,7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+                Camera
+            </button>
+            <button class="tab-btn" data-tab="upload">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17,8 12,3 7,8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Upload
+            </button>
+            <button class="tab-btn" data-tab="manual">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                Manual
+            </button>
+            <button class="tab-btn" data-tab="sensor">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg>
+                Sensors
+            </button>
+        </div>
+
+        <!-- Camera Tab -->
+        <div class="tab-pane active" id="tab-camera">
+            <div class="input-card">
+                <div class="card-header">
+                    <div class="card-chip">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23,7 16,12 23,17 23,7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+                    </div>
+                    <div class="card-title">
+                        <h3>Real-Time Camera Analysis</h3>
+                        <p>Capture facial expressions for AI emotion detection</p>
+                    </div>
+                </div>
+                <div class="camera-wrap" id="cameraWrap">
+                    <video id="cameraPreview" class="camera-preview hidden" autoplay playsinline></video>
+                    <div class="camera-placeholder" id="cameraPlaceholder">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                        <p>Camera inactive</p>
+                    </div>
+                    <div class="scan-line"></div>
+                    <div class="corner corner-tl"></div>
+                    <div class="corner corner-tr"></div>
+                    <div class="corner corner-bl"></div>
+                    <div class="corner corner-br"></div>
+                    <canvas id="cameraOverlay" class="hidden" style="position:absolute;top:0;left:0;width:100%;height:100%;"></canvas>
+                </div>
+                <div class="camera-controls">
+                    <button id="startCamera" class="btn btn-primary">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23,7 16,12 23,17 23,7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+                        Start Camera
+                    </button>
+                    <div id="cameraControls" class="camera-active-controls hidden">
+                        <button id="captureFrame" class="btn btn-emerald">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                            Capture & Analyze
+                        </button>
+                        <button id="stopCamera" class="btn btn-ghost">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/></svg>
+                            Stop
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upload Tab -->
+        <div class="tab-pane" id="tab-upload">
+            <div class="input-card">
+                <div class="card-header">
+                    <div class="card-chip">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17,8 12,3 7,8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    </div>
+                    <div class="card-title">
+                        <h3>Upload Image for Analysis</h3>
+                        <p>Supports JPG, PNG, and WebP formats</p>
+                    </div>
+                </div>
+                <div class="upload-zone" id="uploadZone">
+                    <input type="file" id="imageUpload" accept="image/*" class="file-input">
+                    <div class="upload-content" id="uploadContent">
+                        <div class="upload-icon-wrap">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17,8 12,3 7,8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                        </div>
+                        <h4>Drag & drop your image here</h4>
+                        <p>or</p>
+                        <label for="imageUpload" class="btn btn-primary btn-sm" style="cursor:pointer">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                            Browse Files
+                        </label>
+                        <p class="upload-hint">Maximum file size: 10MB</p>
+                        <p id="fileName" class="file-name"></p>
+                    </div>
+                    <div id="imagePreview" class="image-preview hidden">
+                        <img id="previewImg" src="" alt="Preview">
+                        <div class="preview-actions">
+                            <button id="analyzeImage" class="btn btn-emerald">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13,2 3,14 12,14 11,22 21,10 12,10 13,2"/></svg>
+                                Analyze Image
+                            </button>
+                            <button id="removeImage" class="btn btn-ghost btn-sm">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3,6 5,6 21,6"/><path d="M19,6v14a2,2,0,0,1-2,2H7a2,2,0,0,1-2-2V6m3,0V4a2,2,0,0,1,2-2h4a2,2,0,0,1,2,2v2"/></svg>
+                                Remove
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Manual Tab -->
+        <div class="tab-pane" id="tab-manual">
+            <div class="input-card">
+                <div class="card-header">
+                    <div class="card-chip">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                    </div>
+                    <div class="card-title">
+                        <h3>Self-Assessment</h3>
+                        <p>Manually input your current emotional state</p>
+                    </div>
+                </div>
+                <form id="manualForm" class="form-modern">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                                Current Mood
+                            </label>
+                            <div class="select-wrap">
+                                <select id="mood" name="mood" class="form-input" required>
+                                    <option value="">Select your mood...</option>
+                                    <option value="happy">😊 Happy</option>
+                                    <option value="sad">😢 Sad</option>
+                                    <option value="angry">😠 Angry</option>
+                                    <option value="fear">😨 Anxious</option>
+                                    <option value="neutral">😐 Neutral</option>
+                                </select>
+                                <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg>
+                                Stress Level — <span class="slider-value" id="stressValueDisplay">5</span>
+                            </label>
+                            <div class="slider-wrap">
+                                <input type="range" id="stress_scale" name="stress_scale" min="1" max="10" value="5" class="range-slider">
+                                <div class="slider-labels">
+                                    <span>Low</span>
+                                    <span id="stressValue">5</span>
+                                    <span>High</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-emerald" style="align-self:flex-start">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22,4 12,14.01 9,11.01"/></svg>
+                        Submit Assessment
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Sensor Tab -->
+        <div class="tab-pane" id="tab-sensor">
+            <div class="input-card">
+                <div class="card-header">
+                    <div class="card-chip">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg>
+                    </div>
+                    <div class="card-title">
+                        <h3>Physiological Data</h3>
+                        <p>Enter biometric sensor readings</p>
+                    </div>
+                </div>
+                <form id="sensorForm" class="form-modern">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                                Heart Rate (bpm)
+                            </label>
+                            <input type="number" id="heart_rate" name="heart_rate" class="form-input" placeholder="e.g., 75" min="40" max="200" required>
+                            <span class="hint">Normal: 60–100 bpm</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23,6 13.5,15.5 8.5,10.5 1,18"/><polyline points="17,6 23,6 23,12"/></svg>
+                                Heart Rate Variability
+                            </label>
+                            <input type="number" id="hrv" name="hrv" class="form-input" placeholder="e.g., 50" min="0" max="200" required>
+                            <span class="hint">Higher values indicate better recovery</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                                Sleep Duration (hours)
+                            </label>
+                            <input type="number" id="sleep_hours" name="sleep_hours" class="form-input" step="0.5" placeholder="e.g., 7.5" min="0" max="24" required>
+                            <span class="hint">Recommended: 7–9 hours</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13,2 3,14 12,14 11,22 21,10 12,10 13,2"/></svg>
+                                Activity Level — <span class="slider-value" id="activityValueDisplay">5</span>
+                            </label>
+                            <div class="slider-wrap">
+                                <input type="range" id="activity_level" name="activity_level" min="1" max="10" value="5" class="range-slider">
+                                <div class="slider-labels">
+                                    <span>Sedentary</span>
+                                    <span id="activityValue">5</span>
+                                    <span>Very Active</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                                Current Mood
+                            </label>
+                            <div class="select-wrap">
+                                <select id="self_mood" name="self_mood" class="form-input" required>
+                                    <option value="">Select your mood...</option>
+                                    <option value="happy">😊 Happy</option>
+                                    <option value="sad">😢 Sad</option>
+                                    <option value="angry">😠 Angry</option>
+                                    <option value="fear">😨 Anxious</option>
+                                    <option value="neutral">😐 Neutral</option>
+                                </select>
+                                <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg>
+                                Stress Level — <span class="slider-value" id="sensorStressValueDisplay">5</span>
+                            </label>
+                            <div class="slider-wrap">
+                                <input type="range" id="sensor_stress_scale" name="stress_scale" min="1" max="10" value="5" class="range-slider">
+                                <div class="slider-labels">
+                                    <span>Low</span>
+                                    <span id="sensorStressValue">5</span>
+                                    <span>High</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-emerald" style="align-self:flex-start">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22,4 12,14.01 9,11.01"/></svg>
+                        Submit Sensor Data
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results -->
+    <section id="results" class="results-section hidden">
+        <div class="results-header">
+            <h2>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                Analysis Results
+            </h2>
+            <button id="exportResults" class="btn btn-ghost btn-sm">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Export
+            </button>
+        </div>
+
+        <div class="results-grid">
+            <div class="result-card">
+                <div class="result-icon emotion-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                </div>
+                <div>
+                    <div class="result-label">Detected Emotion</div>
+                    <div class="result-value" id="emotionResult">—</div>
+                    <div class="result-sub">Primary emotional state</div>
+                </div>
+            </div>
+            <div class="result-card">
+                <div class="result-icon stress-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg>
+                </div>
+                <div style="width:100%">
+                    <div class="result-label">Stress Level</div>
+                    <div class="result-value" id="stressResult">—</div>
+                    <div class="progress-bar">
+                        <div id="stressProgress" class="progress-fill" style="width:0%"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="result-card">
+                <div class="result-icon confidence-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                </div>
+                <div>
+                    <div class="result-label">Confidence Score</div>
+                    <div class="result-value" id="confidenceResult">—</div>
+                    <div class="result-sub">Analysis accuracy</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="detail-grid">
+            <div class="detail-card">
+                <h3>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+                    Detailed Analysis
+                </h3>
+                <p class="analysis-text" id="reasonResult">No analysis available yet.</p>
+            </div>
+            <div class="detail-card">
+                <h3>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    Recommendations
+                </h3>
+                <ul class="suggestions-list" id="suggestionsList"></ul>
+            </div>
+        </div>
+
+        <div class="chart-card">
+            <h3>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23,6 13.5,15.5 8.5,10.5 1,18"/><polyline points="17,6 23,6 23,12"/></svg>
+                Emotional Distribution
+            </h3>
+            <div class="chart-wrap">
+                <canvas id="chart"></canvas>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <a href="#" class="logo">
+                    <div class="logo-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"></polyline></svg>
+                    </div>
+                    <div class="logo-text">
+                        <span class="logo-name">MindCare</span>
+                        <span class="logo-sub">AI Mental Wellness</span>
+                    </div>
+                </a>
+                <p class="footer-desc">AI-powered mental wellness monitoring for a healthier tomorrow. Privacy-first, locally processed.</p>
+            </div>
+            <div class="footer-col">
+                <h5>Legal</h5>
+                <div class="footer-links">
+                    <button class="footer-link" id="openTerms">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+                        Terms & Conditions
+                    </button>
+                    <button class="footer-link" id="openPrivacy">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        Privacy Policy
+                    </button>
+                    <button class="footer-link" id="openAbout">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                        About Us
+                    </button>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h5>Agreement</h5>
+                <div class="terms-check">
+                    <input type="checkbox" id="acceptTerms">
+                    <label for="acceptTerms">I agree to the Terms & Conditions</label>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">&copy; 2026 MindCare — Version 1.0 — Built with ♥ for mental wellness</div>
+    </div>
+</footer>
+
+<!-- ===================== MODALS ===================== -->
+<!-- Terms -->
+<div id="termsModal" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+        <div class="modal-top-line"></div>
+        <div class="modal-header">
+            <h2>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+                Terms & Conditions
+            </h2>
+            <button class="modal-close" data-modal-close="termsModal">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+        <div class="modal-body">
+            <h3>Purpose & Scope</h3>
+            <p>This application is an AI-assisted stress and mental state analysis tool developed for educational, research, and wellness purposes only.</p>
+            <h3>Medical Disclaimer</h3>
+            <p>It is <strong style="color:var(--rose)">not intended</strong> for medical diagnosis or treatment. Results may be probabilistic and affected by environmental conditions, lighting, camera quality, and other factors. Always consult qualified healthcare professionals.</p>
+            <h3>User Responsibilities</h3>
+            <ul>
+                <li>Use the application responsibly and ethically</li>
+                <li>Do not rely solely on AI analysis for critical decisions</li>
+                <li>Seek professional help if experiencing severe mental health concerns</li>
+                <li>Ensure proper consent when analyzing images of others</li>
+            </ul>
+            <h3>Limitation of Liability</h3>
+            <p>The developers are not liable for any decisions made based on the analysis provided. This tool is supplementary and should not replace professional medical consultation.</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-ghost btn-sm" data-modal-close="termsModal">Close</button>
+            <button id="agreeBtn" class="btn btn-primary btn-sm">I Agree</button>
+        </div>
+    </div>
+</div>
+
+<!-- Privacy -->
+<div id="privacyModal" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+        <div class="modal-top-line"></div>
+        <div class="modal-header">
+            <h2>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                Privacy Policy
+            </h2>
+            <button class="modal-close" data-modal-close="privacyModal">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+        <div class="modal-body">
+            <h3>Zero Data Storage</h3>
+            <p>No images, videos, or sensor data are stored on our servers. All processing occurs in real-time and data is immediately discarded after analysis.</p>
+            <h3>Camera Access</h3>
+            <p>Webcam access is requested only with explicit user consent. The camera feed is processed locally in your browser whenever possible. No recording or storage occurs.</p>
+            <h3>No Tracking</h3>
+            <p>We do not use third-party analytics, tracking cookies, or advertising networks. Your privacy is our priority.</p>
+            <h3>Your Rights</h3>
+            <ul>
+                <li>Right to access: You control what data you provide</li>
+                <li>Right to deletion: Data is automatically deleted post-analysis</li>
+                <li>Right to transparency: This policy explains our practices clearly</li>
+            </ul>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary btn-sm" data-modal-close="privacyModal">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- About -->
+<div id="aboutModal" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content modal-large">
+        <div class="modal-top-line"></div>
+        <div class="modal-header">
+            <h2>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                About MindCare
+            </h2>
+            <button class="modal-close" data-modal-close="aboutModal">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+        <div class="modal-body">
+            <h3>Academic AI/ML Project</h3>
+            <p>This stress detection system utilizes advanced machine learning algorithms including Vision Transformers (ViT) to analyze facial cues and physiological data. The system combines multiple modalities: Computer Vision, Biometric Analysis, NLP, and Multi-Modal Fusion.</p>
+            <h3>About the Developer</h3>
+            <div style="padding:1.5rem;background:rgba(0,0,0,0.2);border-radius:var(--radius-lg);border:1px solid var(--glass-border);">
+                <div style="font-size:1.25rem;font-weight:800;margin-bottom:0.25rem;">Chandan Kumar Sah</div>
+                <div style="color:var(--cyan);font-size:0.9rem;margin-bottom:1rem;">Computer Science & Engineering (AI & ML)</div>
+                <p style="margin:0 0 1rem">An AI & ML student with a strong interest in building intelligent, human-centered systems that combine machine learning, computer vision, and data-driven decision-making.</p>
+                <div class="skills-grid">
+                    <div class="skill-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px"><polygon points="12,2 2,7 12,12 22,7 12,2"/><polyline points="2,17 12,22 22,17"/><polyline points="2,12 12,17 22,12"/></svg> Machine Learning & DL</div>
+                    <div class="skill-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> Computer Vision</div>
+                    <div class="skill-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px"><polyline points="16,18 22,12 16,6"/><polyline points="8,6 2,12 8,18"/></svg> Full-Stack Integration</div>
+                    <div class="skill-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Responsible AI</div>
+                </div>
+                <div class="mission-box">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    <p>"Empowering mental wellness through technology"</p>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary btn-sm" data-modal-close="aboutModal">Close</button>
+        </div>
+    </div>
+</div>
+
+
+<div id="helpModal" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content modal-large">
+        <div class="modal-top-line"></div>
+        <div class="modal-header">
+            <h2>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                Help & Support
+            </h2>
+            <button class="modal-close" data-modal-close="helpModal">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+        <div class="modal-body">
+            <h3>Getting Started</h3>
+            <p>MindCare helps with stress awareness using AI. Choose Camera, Upload, Manual, or Sensor mode to analyze your current state.</p>
+            <h3>Troubleshooting</h3>
+            <p>If results look incorrect, retry with better lighting or switch to Manual input mode.</p>
+            <h3>Privacy & Safety</h3>
+            <p>All processing is local. No data is stored or sent. <strong style="color:var(--rose)">⚠️ Not a medical diagnostic tool.</strong></p>
+            <h3>Contact & Support</h3>
+            <div class="contact-card">
+                <div class="contact-name">Er. Chandan Kumar Sah</div>
+                <div class="contact-role">CSE – Artificial Intelligence & Machine Learning</div>
+                <a href="mailto:chandann6057@gmail.com" class="contact-email">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                    chandann6057@gmail.com
+                </a>
+            </div>
+            <div class="contact-card">
+                <div class="contact-name">Er. Pranish Sah</div>
+                <div class="contact-role">Biomedical Engineering</div>
+                <a href="mailto:pranishsah30@gmail.com" class="contact-email">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                    pranishsah30@gmail.com
+                </a>
+            </div>
+            <div class="contact-card">
+                <div class="contact-name">Er. Saurav Sah</div>
+                <div class="contact-role">Computer Science Engineering</div>
+                <a href="mailto:sauravshah924@gmail.com" class="contact-email">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                    sauravshah924@gmail.com
+                </a>
+            </div>
+            <h3>🆘 Emergency Resources (24/7)</h3>
+            <div class="emergency-grid">
+                <div class="emergency-card">
+                    <div class="emergency-country"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.19 11.8 19.79 19.79 0 0 1 1.12 3.18 2 2 0 0 1 3.1 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg> USA</div>
+                    <div class="resource-row"><span class="resource-label">Hotline</span><a href="tel:988" class="resource-link">988</a></div>
+                    <div class="resource-row"><span class="resource-label">SMS</span><a href="sms:988" class="resource-link">Text 988</a></div>
+                    <div class="resource-row"><span class="resource-label">Web</span><a href="https://988lifeline.org" target="_blank" class="resource-link">988 Lifeline</a></div>
+                </div>
+                <div class="emergency-card">
+                    <div class="emergency-country"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.19 11.8 19.79 19.79 0 0 1 1.12 3.18 2 2 0 0 1 3.1 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg> India</div>
+                    <div class="resource-row"><span class="resource-label">Hotline</span><a href="tel:080-46110007" class="resource-link">080-4611-0007</a></div>
+                    <div class="resource-row"><span class="resource-label">SMS</span><a href="sms:14416" class="resource-link">14416 (Tele-MANAS)</a></div>
+                </div>
+                <div class="emergency-card">
+                    <div class="emergency-country"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.19 11.8 19.79 19.79 0 0 1 1.12 3.18 2 2 0 0 1 3.1 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg> Nepal</div>
+                    <div class="resource-row"><span class="resource-label">Hotline</span><a href="tel:1166" class="resource-link">1166</a></div>
+                    <div class="resource-row"><span class="resource-label">SMS</span><a href="sms:9840021212" class="resource-link">9840021212</a></div>
+                </div>
+            </div>
+            <h3>FAQ</h3>
+            <p><strong>Q: Is my data saved?</strong><br>A: No. All data is discarded immediately after analysis.</p>
+            <p><strong>Q: How accurate is it?</strong><br>A: Results are for wellness awareness only, not medical-grade accuracy.</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary btn-sm" data-modal-close="helpModal">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- AI Assistant Panel -->
+<div id="aiAssistantBox" class="ai-assistant hide">
+    
+    <div class="ai-header">
+        <span>🤖 MindCare AI</span>
+        <button id="closeAiAssistant" class="ai-close-btn">✖</button>
+    </div>
+
+    <div class="ai-message" id="aiMessage"></div>
+
+    <!-- Speaking Animation -->
+    <div class="voice-animation" id="voiceAnimation">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+
+</div>
+
+<!-- Settings Panel -->
+<div class="settings-panel" id="settingsPanel">
+  <div class="settings-header">
+    <h3>⚙ Settings</h3>
+    <span id="closeSettings" class="close-btn">✖</span>
+  </div>
+
+  <div class="settings-content">
+
+    <!-- AI Voice Toggle -->
+    <div class="setting-item">
+      <label>AI Voice Assistant</label>
+      <input type="checkbox" id="toggleVoice" checked>
+    </div>
+
+    <!-- Notification Toggle -->
+    <div class="setting-item">
+      <label>Enable Notifications</label>
+      <input type="checkbox" id="toggleNotifications" checked>
+    </div>
+
+    <!-- Dark Mode Toggle -->
+    <div class="setting-item">
+      <label>Dark Mode</label>
+      <input type="checkbox" id="toggleDarkMode" checked>
+    </div>
+
+    <!-- Divider -->
+    <hr>
+
+    <!-- Logout -->
+    <button class="logout-btn" id="logoutBtn">🚪 Logout</button>
+
+  </div>
+</div>
+
+<script src="script.min.js"></script>
+
+<script>
+function getTimeBasedMessages() {
+  const hour = new Date().getHours();
+
+  if (hour >= 5 && hour < 12) {
+    return [
+      "🌅 Good Morning | 🧠 Start Your Day with Mental Clarity",
+      "🚀 MindCare AI is Ready to Analyze Your Emotional Patterns",
+      "🌿 A Calm Mind Creates a Productive Day"
+    ];
+  } 
+  else if (hour >= 12 && hour < 17) {
+    return [
+      "☀️ Good Afternoon | 📊 Stay Focused & Balanced",
+      "🤖 Real-Time Emotional Insights Active",
+      "💡 Small Mental Breaks Improve Big Results"
+    ];
+  } 
+  else if (hour >= 17 && hour < 21) {
+    return [
+      "🌇 Good Evening | 🌿 Time to Reflect",
+      "🧘 Relax & Let MindCare Guide Your Wellness",
+      "📈 Reviewing Today's Emotional Patterns"
+    ];
+  } 
+  else {
+    return [
+      "🌙 Good Night | 💙 Prioritize Rest",
+      "🧠 Mental Recovery is Essential for Growth",
+      "✨ MindCare Supporting Your Inner Peace"
+    ];
+  }
+}
+
+const greetingElement = document.getElementById("dynamicGreeting");
+let messages = getTimeBasedMessages();
+let index = 0;
+
+function changeMessage() {
+  greetingElement.classList.add("fade-out");
+
+  setTimeout(() => {
+    greetingElement.innerText = messages[index];
+    greetingElement.classList.remove("fade-out");
+    greetingElement.classList.add("fade-in");
+
+    index = (index + 1) % messages.length;
+  }, 500);
+}
+
+// Initial load
+greetingElement.innerText = messages[0];
+
+// Change every 5 seconds
+setInterval(changeMessage, 5000);
+</script>
+
+<script>
+// Settings Panel Controls
+// Open & Close Panel
+const settingsBtn = document.getElementById("settingsBtn");
+const settingsPanel = document.getElementById("settingsPanel");
+const closeSettings = document.getElementById("closeSettings");
+
+if (settingsBtn && settingsPanel) {
+  settingsBtn.onclick = () => settingsPanel.classList.add("active");
+}
+if (closeSettings && settingsPanel) {
+  closeSettings.onclick = () => settingsPanel.classList.remove("active");
+}
+
+// ===== GET TOGGLES =====
+const toggleVoice = document.getElementById("toggleVoice");
+const toggleNotifications = document.getElementById("toggleNotifications");
+const toggleDarkMode = document.getElementById("toggleDarkMode");
+
+// ===== DEFAULT STATES =====
+let voiceEnabled = true;
+let notificationsEnabled = true;
+
+// ===============================
+// 1️⃣ AI VOICE ASSISTANT TOGGLE
+// ===============================
+if (toggleVoice) {
+  toggleVoice.addEventListener("change", function () {
+    voiceEnabled = this.checked;
+
+    if (!voiceEnabled) {
+      speechSynthesis.cancel();
+      console.log("Voice Assistant Disabled");
+    } else {
+      console.log("Voice Assistant Enabled");
+    }
+  });
+}
+
+// Modified speakMessage function to respect voice toggle
+function speakMessage(text) {
+  if (!voiceEnabled) return; // 🚀 STOP if disabled
+
+  const aiBox = document.getElementById("aiAssistantBox");
+  const voiceAnimation = document.getElementById("voiceAnimation");
+  
+  if (!aiBox) return;
+  
+  aiBox.classList.remove("hide");
+
+  typeText(text, () => {
+    const utterance = new SpeechSynthesisUtterance(text);
+    
+    if (voiceAnimation) {
+      voiceAnimation.style.display = "flex";
+    }
+
+    speechSynthesis.speak(utterance);
+
+    utterance.onend = function () {
+      if (voiceAnimation) {
+        voiceAnimation.style.display = "none";
+      }
+      setTimeout(() => {
+        aiBox.classList.add("hide");
+      }, 1000);
+    };
+  });
+}
+
+// ===============================
+// 2️⃣ ENABLE NOTIFICATIONS
+// ===============================
+if (toggleNotifications) {
+  toggleNotifications.addEventListener("change", function () {
+    notificationsEnabled = this.checked;
+
+    if (notificationsEnabled) {
+      if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+        Notification.requestPermission();
+      }
+      console.log("Notifications Enabled");
+    } else {
+      console.log("Notifications Disabled");
+    }
+  });
+}
+
+// Function to Show Notification
+function showNotification(message) {
+  if (!notificationsEnabled) return;
+
+  if (Notification.permission === "granted") {
+    new Notification("MindCare AI", {
+      body: message,
+      icon: "logo.png" // optional
+    });
+  }
+}
+
+// Request notification permission on first load if not already set
+if (Notification.permission === "default") {
+  Notification.requestPermission();
+}
+
+// ===============================
+// 3️⃣ DARK MODE TOGGLE (REAL)
+// ===============================
+if (toggleDarkMode) {
+  toggleDarkMode.addEventListener("change", function () {
+    if (this.checked) {
+      document.body.classList.remove("light-mode");
+      localStorage.setItem("darkMode", "enabled");
+    } else {
+      document.body.classList.add("light-mode");
+      localStorage.setItem("darkMode", "disabled");
+    }
+  });
+}
+
+// Add Light Mode CSS
+const style = document.createElement('style');
+style.textContent = `
+  body.light-mode {
+    background: #f4f6f9 !important;
+    color: #111 !important;
+  }
+  body.light-mode .surface {
+    background: #ffffff !important;
+  }
+  body.light-mode .input-card,
+  body.light-mode .mode-card,
+  body.light-mode .detail-card,
+  body.light-mode .chart-card {
+    background: #ffffff !important;
+    border-color: rgba(0,0,0,0.1) !important;
+  }
+`;
+document.head.appendChild(style);
+
+// Restore Dark Mode on Refresh
+if (localStorage.getItem("darkMode") === "disabled") {
+  document.body.classList.add("light-mode");
+  if (toggleDarkMode) toggleDarkMode.checked = false;
+}
+
+// Logout Function from Settings Panel
+const logoutSettingsBtn = document.getElementById("logoutBtn");
+if (logoutSettingsBtn) {
+  logoutSettingsBtn.addEventListener("click", function() {
+    // Call the existing logout function if available
+    if (typeof handleLogout === 'function') {
+      handleLogout();
+    } else {
+      alert("Logging out...");
+      window.location.href = "login.html";
+    }
+  });
+}
+
+// AI Assistant - Typing + Speaking + Voice Animation
+const aiBox = document.getElementById("aiAssistantBox");
+const aiMessage = document.getElementById("aiMessage");
+const voiceAnimation = document.getElementById("voiceAnimation");
+const closeBtn = document.getElementById("closeAiAssistant");
+
+function typeText(text, callback) {
+    aiMessage.textContent = "";
+    let words = text.split(" ");
+    let i = 0;
+
+    let typing = setInterval(() => {
+        aiMessage.textContent += words[i] + " ";
+        i++;
+        if (i >= words.length) {
+            clearInterval(typing);
+            callback(); // start speaking after typing
+        }
+    }, 150); // speed of typing
+}
+
+// Manual close
+if (closeBtn) {
+  closeBtn.addEventListener("click", () => {
+    speechSynthesis.cancel();
+    if (voiceAnimation) voiceAnimation.style.display = "none";
+    if (aiBox) aiBox.classList.add("hide");
+  });
+}
+
+// Modified playAIGreeting to respect voice toggle
+function playAIGreetingModified() {
+  if (!voiceEnabled) return;   // ⬅ Prevent speaking if turned off
+
+  const panel = document.getElementById("aiAssistantBox");
+  const textElement = document.getElementById("aiMessage");
+  const voiceAnim = document.getElementById("voiceAnimation");
+
+  const hour = new Date().getHours();
+  let message = "";
+
+  if (hour >= 5 && hour < 12) {
+    message = "Good morning. Welcome to MindCare. Your mental wellness dashboard is now ready.";
+  } 
+  else if (hour >= 12 && hour < 17) {
+    message = "Good afternoon. Welcome to MindCare. Your emotional insights are prepared.";
+  }
+  else if (hour >= 17 && hour < 21) {
+    message = "Good evening. Relax. Your personalized analysis is ready.";
+  }
+  else {
+    message = "Good night. Your journey toward mental clarity begins now.";
+  }
+
+  // Show panel (remove hide class)
+  if (panel) panel.classList.remove("hide");
+
+  // Use the speakMessage function for typing + speaking with animation
+  speakMessage(message);
+}
+
+// Call this on page load
+window.addEventListener("load", function () {
+  // Small delay for dramatic effect
+  setTimeout(playAIGreetingModified, 1200);
+});
+</script>
+
+</body>
+</html>

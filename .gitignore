@@ -1,0 +1,5 @@
+# ML models
+*.pth
+*.pt
+models
+*.ckpt
