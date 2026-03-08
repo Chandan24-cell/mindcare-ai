@@ -181,7 +181,7 @@ Installation
 
 Clone the repository
 
-git clone 
+git clone https://github.com/Chandan24-cell/mindcare-ai.git
 cd mindcare-ai
 
 Create virtual environment
