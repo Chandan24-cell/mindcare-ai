@@ -181,7 +181,7 @@ Installation
 
 Clone the repository
 
-git clone https://github.com/sername/mindcare-ai.git
+git clone 
 cd mindcare-ai
 
 Create virtual environment
