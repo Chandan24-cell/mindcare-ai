@@ -2009,17 +2009,24 @@
 
     // Attach event listener when DOM is ready
     document.addEventListener('DOMContentLoaded', () => {
-        const logoutButtons = [
-            document.getElementById('logout-main'),
-            document.getElementById('logoutBtn')
-        ].filter(Boolean);
+        // Robust logout button initialization with retry
+        function attachLogoutListeners() {
+            const logoutButtons = [
+                document.getElementById('logout-main'),
+                document.getElementById('logoutBtn')
+            ].filter(Boolean);
 
-        if (logoutButtons.length === 0) {
-            console.warn('Logout button not found');
-        } else {
+            if (logoutButtons.length === 0) {
+                // Retry after a short delay if buttons not found yet
+                setTimeout(attachLogoutListeners, 500);
+                return;
+            }
+            
             logoutButtons.forEach(btn => btn.addEventListener('click', handleLogout));
-            console.log('Logout listener attached');
+            console.log(`✅ Logout listeners attached to ${logoutButtons.length} button(s)`);
         }
+        
+        attachLogoutListeners();
 
         // Check if user is logged in (session persistence)
         (async () => {

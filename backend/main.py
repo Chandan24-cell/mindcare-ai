@@ -74,6 +74,31 @@ app = FastAPI(
 
 
 # =============================================================================
+# Startup Event - Diagnostics
+# =============================================================================
+
+@app.on_event("startup")
+async def startup_event():
+    """Log startup information and verify configuration."""
+    import os
+    print("\n" + "="*70)
+    print("🚀 MINDCARE BACKEND STARTUP")
+    print("="*70)
+    print(f"✅ API Version: 2.0.0")
+    print(f"✅ Environment: {os.getenv('ENVIRONMENT', 'development')}")
+    print(f"✅ Port: {os.getenv('PORT', '8000')}")
+    print(f"✅ CORS enabled for all origins")
+    model_status = get_model_status()
+    if model_status["available"]:
+        print(f"✅ ML Model: READY ({model_status['path']})")
+    else:
+        print(f"⚠️  ML Model: NOT AVAILABLE - Running in Mock Mode")
+        print(f"   Reason: {model_status['message']}")
+    print("="*70)
+    print("🌐 Ready to serve requests!\n")
+
+
+# =============================================================================
 # CORS Middleware Configuration
 # =============================================================================
 # Allows cross-origin requests for frontend development
@@ -126,6 +151,22 @@ async def health_check():
         confidence=1.0,
         suggestion=[],
         message=health_message,
+    )
+
+
+@app.get("/favicon.ico")
+async def favicon():
+    """
+    Serve a simple favicon to prevent 404 errors from browser requests.
+    Returns a minimal valid ICO file.
+    """
+    # Return a 1x1 transparent PNG encoded as data URL response
+    return RedirectResponse(
+        url="data:image/x-icon;base64,AAABAAEAEBAAAAEAIA"
+             "BoBAAFgIAAFgIAACAgAAAIAAgAKAgAANgIAAjoAgAAKAAAAEAAAAAB"
+             "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+             "AAAAAAAAAA==",
+        status_code=200
     )
 
 

@@ -847,8 +847,17 @@ function closeModal(id) {
 }
 
 // Terms Acceptance
+// In Demo Mode, automatically allow access (no real data processing)
+// In Real ML Mode, require explicit checkbox acceptance
 function validateTerms() {
     const checkbox = document.getElementById('acceptTerms');
+    
+    // In Demo Mode, automatically accept (no actual data processing)
+    if (!isRealMLMode) {
+        return true;
+    }
+    
+    // In Real ML Mode, require explicit acceptance
     const accepted = checkbox ? checkbox.checked : false;
 
     if (!accepted) {
