@@ -23,6 +23,7 @@
 # =============================================================================
 
 import io
+from pathlib import Path
 from fastapi import FastAPI, File, UploadFile, HTTPException, Query
 from fastapi.responses import JSONResponse, FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
@@ -45,6 +46,12 @@ from backend.face_detection import NoFaceDetectedError, MultipleFacesDetectedErr
 from backend.model_loader import ModelUnavailableError, get_model_status
 from backend.utils.response import success_response, error_response
 from backend.report_generator import generate_report
+
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+FRONTEND_DIR = PROJECT_ROOT / "frontend"
+REPORTS_DIR = PROJECT_ROOT / "reports"
+REPORTS_DIR.mkdir(parents=True, exist_ok=True)
 
 
 # =============================================================================
@@ -125,7 +132,7 @@ async def serve_frontend():
     This is the entry point for the web application.
     Users will be redirected here and then to the main app after authentication.
     """
-    return RedirectResponse(url="/frontend/index.html")
+    return RedirectResponse(url="/frontend/login.html")
 
 
 @app.get("/health")
@@ -390,7 +397,8 @@ async def generate_pdf_report(request: dict):
             emotion=request.get("emotion", "Unknown"),
             stress_level=request.get("stress_level", "Unknown"),
             confidence=request.get("confidence", 0.0),
-            suggestions=request.get("suggestions", [])
+            suggestions=request.get("suggestions") or request.get("suggestion", []),
+            reason=request.get("reason"),
         )
         return {"status": "success", "report_path": filepath}
     except Exception as e:
@@ -403,10 +411,10 @@ async def generate_pdf_report(request: dict):
 
 # Mount the frontend directory to serve static files (HTML aware)
 # This allows the API to serve the web application directly
-app.mount("/frontend", StaticFiles(directory="frontend", html=True), name="frontend")
+app.mount("/frontend", StaticFiles(directory=str(FRONTEND_DIR), html=True), name="frontend")
 
 # Mount reports directory for PDF downloads
-app.mount("/reports", StaticFiles(directory="reports"), name="reports")
+app.mount("/reports", StaticFiles(directory=str(REPORTS_DIR)), name="reports")
 
 
 # =============================================================================

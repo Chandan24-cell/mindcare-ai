@@ -1,10 +1,13 @@
-from reportlab.lib.pagesizes import letter
-from reportlab.pdfgen import canvas
-from reportlab.lib.units import inch
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.platypus import Paragraph, Spacer
 import datetime
-import os
+from pathlib import Path
+
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.units import inch
+from reportlab.pdfgen import canvas
+
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+REPORTS_DIR = PROJECT_ROOT / "reports"
 
 def generate_report(email, emotion, stress_level, confidence, suggestions, reason=None):
     """
@@ -19,12 +22,12 @@ def generate_report(email, emotion, stress_level, confidence, suggestions, reaso
         reason: Detailed analysis explanation (optional)
     """
     filename = f"report_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
-    filepath = os.path.join("reports", filename)
-    os.makedirs("reports", exist_ok=True)
+    REPORTS_DIR.mkdir(parents=True, exist_ok=True)
+    filepath = REPORTS_DIR / filename
 
     # Setup canvas
     width, height = letter
-    c = canvas.Canvas(filepath, pagesize=letter)
+    c = canvas.Canvas(str(filepath), pagesize=letter)
     margin = 0.75 * inch  # 0.75 inch margins
 
     # Title - Centered
@@ -151,4 +154,4 @@ def generate_report(email, emotion, stress_level, confidence, suggestions, reaso
     c.drawString(margin, footer_y, footer_text)
 
     c.save()
-    return filepath
+    return f"reports/{filename}"

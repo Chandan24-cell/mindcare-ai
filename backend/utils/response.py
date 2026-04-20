@@ -25,6 +25,7 @@ def success_response(
             "stress_level": stress_level,
             "confidence": confidence,
             "suggestion": suggestion,
+            "suggestions": suggestion,
             "message": message,
         },
     )
