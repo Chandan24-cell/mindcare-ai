@@ -1,0 +1,2 @@
+backend/models/vit_small_emotion.pth filter=lfs diff=lfs merge=lfs -text
+backend/models/vit_small_emotion_int8.pt filter=lfs diff=lfs merge=lfs -text

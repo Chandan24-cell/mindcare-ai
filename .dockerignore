@@ -1,0 +1,31 @@
+# Python
+venv
+.venv
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+
+# Git
+.git
+.gitignore
+
+# Logs
+*.log
+server.log
+app.log
+
+# Node
+node_modules
+
+# Project files not needed in image
+README.md
+doc
+assets
+
+
+# Model weights (very large)
+
+
+# Mac
+.DS_Store

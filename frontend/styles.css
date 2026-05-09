@@ -1,0 +1,8 @@
+/*
+ * Compatibility stylesheet for the relocated MindCare CSS structure.
+ *
+ * Keep this root path available because the backend serves /frontend/* as
+ * static assets and older cached pages may still request /frontend/styles.css.
+ */
+@import url("/frontend/css/base.css");
+@import url("/frontend/css/styles.css");
