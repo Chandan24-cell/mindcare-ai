@@ -45,7 +45,7 @@ def run():
         except Exception:
             pass  # Silently fail if browser opening fails
 
-    uvicorn.run("backend.main:app", host=host, port=port)
+uvicorn.run("backend.main:app", host="0.0.0.0", port=port)
 
 
 if __name__ == "__main__":

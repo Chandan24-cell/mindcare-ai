@@ -149,5 +149,7 @@ if __name__ == "__main__":
         "127.0.0.1" if environment == "development" else "0.0.0.0",
     ).strip()
 
-    uvicorn.run(app, host=host, port=port)
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=port)
+
 
