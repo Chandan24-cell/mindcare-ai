@@ -1,3 +1,12 @@
+---
+title: MindCare AI
+emoji: 🧠
+colorFrom: blue
+colorTo: purple
+sdk: docker
+app_port: 7860
+pinned: false
+---
 # MindCare AI
 
 <div align="center">
