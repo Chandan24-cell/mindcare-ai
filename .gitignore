@@ -1,26 +1,13 @@
-# Python cache
+cat > .gitignore << 'EOF'
+.venv/
 __pycache__/
 *.pyc
-
-# MacOS
+.env
 .DS_Store
-
-# Virtual env
-.venv/
-
-# Node modules
-node_modules/
-
-# Environment
-.env
-
-# ML model weights
-backend/models/*.pth
-backend/models/*.pt
-!backend/models/vit_small_emotion.pth
-!backend/models/vit_small_emotion_int8.pt
-
-# Reports
 reports/
-*.jpeg
-.env
+*.pth
+*.pt
+*.onnx
+node_modules/
+backend/data/*.json
+EOF
