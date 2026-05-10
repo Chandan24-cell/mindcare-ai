@@ -1,17 +1,3 @@
----
-title: MindCare AI
-emoji: 🧠
-colorFrom: blue
-colorTo: purple
-sdk: docker
-app_port: 7860
-pinned: false
----
-
-# MindCare AI
-
-AI-powered mental wellness and emotion detection platform.
-
 # MindCare AI
 
 <div align="center">
@@ -25,14 +11,15 @@ AI-powered mental wellness and emotion detection platform.
   </pre>
 
   <p><strong>Your face tells the story your words never could.</strong></p>
+
   <p>
     MindCare AI is a production-ready, multi-modal stress detection platform that reads facial emotion in real time,
     maps it to a stress signal, and responds with personalized wellness guidance, downloadable PDF reports,
     and voice-assisted recommendations.
   </p>
-  <p>
-    Built for rapid demos. Powered by deep learning. Designed for humans.
-  </p>
+
+  <p>Built for rapid demos. Powered by deep learning. Designed for humans.</p>
+
   <p>
     <a href="#quick-start"><strong>Quick Start</strong></a>
     ·
@@ -45,6 +32,8 @@ AI-powered mental wellness and emotion detection platform.
     <a href="#docker-deployment"><strong>Docker</strong></a>
   </p>
 </div>
+
+---
 
 ## What Makes This Different
 
@@ -59,6 +48,8 @@ AI-powered mental wellness and emotion detection platform.
 | Usually frontend demos only | Enterprise-grade backend architecture with observability, health monitoring, websocket streaming, and platform APIs |
 | Single-mode input systems | Camera, upload, manual, sensor, and realtime streaming pipelines |
 
+---
+
 ## Feature Showcase
 
 | Area | Capabilities |
@@ -70,6 +61,8 @@ AI-powered mental wellness and emotion detection platform.
 | Recommendations | DeepSeek-powered suggestions when configured, deterministic fallback otherwise |
 | PDF reports | ReportLab-generated export with email capture and downloadable report path |
 | Frontend dashboard | Chart.js history graph, notifications, voice assistant, and theme persistence |
+
+---
 
 ## System Architecture
 
@@ -108,6 +101,8 @@ AI-powered mental wellness and emotion detection platform.
                      PDF Reports · Research Export APIs
 ```
 
+---
+
 ## ML Model & Intelligence
 
 ### Vision Transformer Pipeline
@@ -132,32 +127,6 @@ Softmax over 7 labels
    v
 Emotion -> stress mapping
 ```
-
-## Advanced Intelligence Layer
-
-MindCare AI evolved from a simple emotion detector into a research-oriented cognitive wellness platform.
-
-The system now includes deterministic intelligence engines for:
-
-| Intelligence System | Purpose |
-| --- | --- |
-| Multimodal Fusion Engine | Combines image, manual, and sensor signals into unified wellness inference |
-| Trend Analytics Engine | Tracks emotional progression and longitudinal stress trends |
-| Burnout Detection | Identifies sustained high-risk emotional patterns |
-| Stability & Recovery Analysis | Measures emotional consistency and resilience recovery |
-| Explainability Engine | Produces transparent reasoning traces and modality confidence |
-| Behavioral Profiling | Learns user behavioral tendencies over time |
-| Adaptive Recommendation Engine | Personalizes interventions based on historical effectiveness |
-| Emotional Drift Engine | Detects gradual emotional movement across sessions |
-| Risk Forecasting Engine | Projects future wellness risk trajectories |
-| Cognitive Load Estimation | Estimates overload and mental fatigue |
-| Intervention Simulation | Simulates possible future wellness outcomes |
-| Temporal Reasoning Engine | Understands longitudinal emotional transitions |
-| Self-Evolving Profiles | Continuously adapts contextual user understanding |
-| Orchestration Engine | Coordinates intelligence outputs into unified insights |
-
-All systems are additive, modular, and production-safe.
-
 
 ### Model Specifications
 
@@ -195,6 +164,35 @@ Input image
    +--> 400 error       "No face detected. Please align your face with the camera."
 ```
 
+---
+
+## Advanced Intelligence Layer
+
+MindCare AI evolved from a simple emotion detector into a research-oriented cognitive wellness platform.
+
+The system now includes deterministic intelligence engines for:
+
+| Intelligence System | Purpose |
+| --- | --- |
+| Multimodal Fusion Engine | Combines image, manual, and sensor signals into unified wellness inference |
+| Trend Analytics Engine | Tracks emotional progression and longitudinal stress trends |
+| Burnout Detection | Identifies sustained high-risk emotional patterns |
+| Stability & Recovery Analysis | Measures emotional consistency and resilience recovery |
+| Explainability Engine | Produces transparent reasoning traces and modality confidence |
+| Behavioral Profiling | Learns user behavioral tendencies over time |
+| Adaptive Recommendation Engine | Personalizes interventions based on historical effectiveness |
+| Emotional Drift Engine | Detects gradual emotional movement across sessions |
+| Risk Forecasting Engine | Projects future wellness risk trajectories |
+| Cognitive Load Estimation | Estimates overload and mental fatigue |
+| Intervention Simulation | Simulates possible future wellness outcomes |
+| Temporal Reasoning Engine | Understands longitudinal emotional transitions |
+| Self-Evolving Profiles | Continuously adapts contextual user understanding |
+| Orchestration Engine | Coordinates intelligence outputs into unified insights |
+
+All systems are additive, modular, and production-safe.
+
+---
+
 ## Multi-Modal Input Pipelines
 
 | Mode | Input | Pipeline | Best Use Case |
@@ -203,6 +201,8 @@ Input image
 | Image upload | JPEG / PNG file | Face detect -> crop -> ViT -> stress map | Single-image analysis |
 | Manual mood | Mood + stress scale | Rule-based self-report analysis | No camera workflow |
 | Sensor input | HR, HRV, sleep, activity, mood | Weighted heuristic scoring | Wearable-style simulation |
+
+---
 
 ## API Reference
 
@@ -254,7 +254,7 @@ Prediction endpoints return a consistent JSON structure:
 }
 ```
 
-`suggestion` is the original field used by the frontend. `suggestions` is also returned for convenience.
+> `suggestion` is the original field used by the frontend. `suggestions` is also returned for convenience.
 
 ### `POST /predict/image`
 
@@ -315,7 +315,7 @@ Request:
 }
 ```
 
-Note: `activity_level` is a numeric score from 1 (sedentary) to 10 (very active).
+> `activity_level` is a numeric score from 1 (sedentary) to 10 (very active).
 
 ### `POST /generate-report`
 
@@ -344,6 +344,23 @@ Response:
   "report_path": "reports/report_20260420_143012.pdf"
 }
 ```
+
+---
+
+## Research & Simulation APIs
+
+| Endpoint | Purpose |
+| :--- | :--- |
+| `/research/benchmarks` | Research benchmarking |
+| `/research/explainability` | Explainability exports |
+| `/research/simulation` | Intervention simulation |
+| `/research/export/json` | JSON export |
+| `/research/export/csv` | CSV export |
+| `/research/export/markdown` | Markdown export |
+
+> Please refer to the specific API documentation for details on required parameters, headers, and request/response payloads for each endpoint.
+
+---
 
 ## Project Structure
 
@@ -382,6 +399,7 @@ mindcare-ai/
 ├── requirements.txt
 ├── app.py
 └── README.md
+```
 
 ### Architecture Notes
 
@@ -391,6 +409,8 @@ mindcare-ai/
 - `frontend/js/app.js` owns prediction workflows: API calls, camera capture, manual/sensor forms, results, charts, reports, and toasts.
 - `frontend/js/dashboard-ui.js` owns non-prediction dashboard chrome: greetings, settings persistence, theme toggles, native notifications, and voice assistant.
 - `frontend/styles.css` and `frontend/script.js` remain as compatibility paths so older cached pages and static URLs continue to work.
+
+---
 
 ## Quick Start
 
@@ -423,7 +443,7 @@ export OPENROUTER_API_KEY=your_api_key_here
 export MINDCARE_MODEL_PATH=/absolute/path/to/vit_small_emotion.pth
 ```
 
-Only `OPENROUTER_API_KEY` is optional. If `MINDCARE_MODEL_PATH` is unset, the backend looks for the model in `backend/models/vit_small_emotion.pth`.
+> Only `OPENROUTER_API_KEY` is optional. If `MINDCARE_MODEL_PATH` is unset, the backend looks for the model in `backend/models/vit_small_emotion.pth`.
 
 ### 3. Start the Server
 
@@ -443,6 +463,8 @@ HOST=0.0.0.0 PORT=8000 uvicorn backend.main:app --reload
 - Direct dashboard page: `http://localhost:8000/frontend/index.html`
 - Swagger docs: `http://localhost:8000/docs`
 
+---
+
 ## Docker Deployment
 
 ```bash
@@ -451,7 +473,7 @@ docker build -t mindcare-ai .
 docker run -p 7860:7860 mindcare-ai
 
 docker run -p 7860:7860 \
-  -e OPENROUTER_API_KEY= your api key here
+  -e OPENROUTER_API_KEY=your_api_key_here \
   mindcare-ai
 
 docker run -p 7860:7860 \
@@ -461,6 +483,8 @@ docker run -p 7860:7860 \
 
 The Docker image uses `python:3.11-slim`, installs OpenCV runtime libraries, and starts the API with `python app.py`. The launcher binds to the `PORT` environment variable when provided and otherwise uses port `7860`, matching the Hugging Face Docker Space `app_port` metadata.
 
+---
+
 ## Render Deployment
 
 This repository already includes [`render.yaml`](render.yaml), configured to:
@@ -468,6 +492,8 @@ This repository already includes [`render.yaml`](render.yaml), configured to:
 - use Python 3.11
 - install dependencies with `pip install -r requirements.txt`
 - start the backend with `uvicorn backend.main:app --host 0.0.0.0 --port $PORT`
+
+---
 
 ## Frontend Dashboard
 
@@ -484,6 +510,8 @@ The browser UI opens directly to a single-page dashboard.
 | Settings | Theme toggle, voice toggle, notification toggle |
 | Voice assistant | Web Speech API playback of recommendations |
 
+---
+
 ## Technology Stack
 
 | Layer | Technology | Why It Fits |
@@ -498,30 +526,8 @@ The browser UI opens directly to a single-page dashboard.
 | Recommendations | DeepSeek API + rule engine | Better personalization with reliable offline fallback |
 | Deployment | Docker, Render | Portable local and cloud execution |
 
-# Research & Simulation APIs
-
-This section outlines the available API endpoints for research operations, simulations, and data exports. 
-
-## Endpoints Overview
-
-| Endpoint | Purpose |
-| :--- | :--- |
-| `/research/benchmarks` | Research benchmarking |
-| `/research/explainability` | Explainability exports |
-| `/research/simulation` | Intervention simulation |
-| `/research/export/json` | JSON export |
-| `/research/export/csv` | CSV export |
-| `/research/export/markdown` | Markdown export |
-
----
-**Note:** Please refer to the specific API documentation for details on required parameters, headers, and request/response payloads for each endpoint.
-
-
 ---
 
-# 6. APPEND “Research Direction”
-
-```md
 ## Research Direction
 
 MindCare AI is being expanded beyond traditional emotion recognition into a broader cognitive wellness intelligence platform.
@@ -540,15 +546,9 @@ Current research directions include:
 - Personalized wellness simulation
 
 The architecture is intentionally modular to support future publication-oriented experimentation and enterprise deployment.
-```
 
 ---
 
-# 7. UPDATE ROADMAP
-
-Replace roadmap with:
-
-```md
 ## Roadmap
 
 ### Phase 1 — Foundation ✅
@@ -604,49 +604,8 @@ Replace roadmap with:
 - Federated wellness learning
 - Mobile companion app
 - Research publication pipeline
-```
 
 ---
-
-# 8. IMPORTANT SECURITY FIX
-
-REMOVE THIS ENTIRE PART IMMEDIATELY:
-
-```bash
-export OPENROUTER_API_KEY=your_api_key_here
-```
-
-Never expose real API keys in README.
-
-Replace with:
-
-```bash
-export OPENROUTER_API_KEY=your_api_key_here
-```
-
----
-
-# 9. ADD NEW VERSION FOOTER
-
-Replace footer with:
-
-```md
-<div align="center">
-
-### MindCare AI
-
-Production-Ready Cognitive Wellness Intelligence Platform
-
-Built with:
-FastAPI · PyTorch · Vision Transformers · WebSockets · MLOps · Explainable AI
-
-**Author:** Chandan Kumar Sah  
-Department of Artificial Intelligence & Machine Learning
-
-MindCare AI · Research & Enterprise Edition · MIT License
-
-</div>
-```
 
 ## Important Notes
 
@@ -708,7 +667,10 @@ PyTorch · FastAPI · Vision Transformers · OpenCV · Docker · WebSockets · E
 
 ### MindCare AI
 
-Research & Enterprise Cognitive Wellness Platform
+Production-Ready Cognitive Wellness Intelligence Platform
+
+Built with:
+FastAPI · PyTorch · Vision Transformers · WebSockets · MLOps · Explainable AI
 
 Built for:
 Multimodal Intelligence · Realtime Emotion AI · Behavioral Analytics · Wellness Research
