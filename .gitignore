@@ -23,3 +23,4 @@ backend/models/*.pt
 # Reports
 reports/
 *.jpeg
+.env

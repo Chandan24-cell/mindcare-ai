@@ -1,0 +1,149 @@
+{
+  "sessions": [
+    {
+      "session_id": "session_1778431143601",
+      "timestamp": "2026-05-10T16:39:03.601716Z",
+      "emotion": "angry",
+      "stress_level": "medium",
+      "confidence": 0.75,
+      "wellness_score": 45,
+      "severity": "high",
+      "sleep_hours": 3.0,
+      "heart_rate": 70.0,
+      "hrv": 30.0,
+      "activity_level": 8,
+      "source_modalities": [
+        "sensor",
+        "manual"
+      ]
+    },
+    {
+      "session_id": "session_1778431109640",
+      "timestamp": "2026-05-10T16:38:29.640862Z",
+      "emotion": "angry",
+      "stress_level": "low",
+      "confidence": 0.85,
+      "wellness_score": 79,
+      "severity": "moderate",
+      "sleep_hours": null,
+      "heart_rate": null,
+      "hrv": null,
+      "activity_level": null,
+      "source_modalities": [
+        "manual"
+      ]
+    },
+    {
+      "session_id": "session_1778431102427",
+      "timestamp": "2026-05-10T16:38:22.427848Z",
+      "emotion": "happy",
+      "stress_level": "low",
+      "confidence": 0.6780000329017639,
+      "wellness_score": 91,
+      "severity": "low",
+      "sleep_hours": null,
+      "heart_rate": null,
+      "hrv": null,
+      "activity_level": null,
+      "source_modalities": [
+        "facial"
+      ]
+    },
+    {
+      "session_id": "session_1778431092156",
+      "timestamp": "2026-05-10T16:38:12.156264Z",
+      "emotion": "neutral",
+      "stress_level": "medium",
+      "confidence": 0.9470678567886353,
+      "wellness_score": 83,
+      "severity": "low",
+      "sleep_hours": null,
+      "heart_rate": null,
+      "hrv": null,
+      "activity_level": null,
+      "source_modalities": [
+        "facial"
+      ]
+    },
+    {
+      "session_id": "session_1778431089231",
+      "timestamp": "2026-05-10T16:38:09.231700Z",
+      "emotion": "neutral",
+      "stress_level": "medium",
+      "confidence": 0.9470678567886353,
+      "wellness_score": 83,
+      "severity": "low",
+      "sleep_hours": null,
+      "heart_rate": null,
+      "hrv": null,
+      "activity_level": null,
+      "source_modalities": [
+        "facial"
+      ]
+    },
+    {
+      "session_id": "session_1778431080980",
+      "timestamp": "2026-05-10T16:38:00.980704Z",
+      "emotion": "neutral",
+      "stress_level": "medium",
+      "confidence": 0.9764799475669861,
+      "wellness_score": 84,
+      "severity": "low",
+      "sleep_hours": null,
+      "heart_rate": null,
+      "hrv": null,
+      "activity_level": null,
+      "source_modalities": [
+        "facial"
+      ]
+    },
+    {
+      "session_id": "session_1778431071384",
+      "timestamp": "2026-05-10T16:37:51.384238Z",
+      "emotion": "neutral",
+      "stress_level": "medium",
+      "confidence": 0.961510419845581,
+      "wellness_score": 83,
+      "severity": "low",
+      "sleep_hours": null,
+      "heart_rate": null,
+      "hrv": null,
+      "activity_level": null,
+      "source_modalities": [
+        "facial"
+      ]
+    },
+    {
+      "session_id": "session_1778430968985",
+      "timestamp": "2026-05-10T16:36:08.985056Z",
+      "emotion": "neutral",
+      "stress_level": "medium",
+      "confidence": 0.9764799475669861,
+      "wellness_score": 84,
+      "severity": "low",
+      "sleep_hours": null,
+      "heart_rate": null,
+      "hrv": null,
+      "activity_level": null,
+      "source_modalities": [
+        "facial"
+      ]
+    },
+    {
+      "session_id": "session_1778430953463",
+      "timestamp": "2026-05-10T16:35:53.463444Z",
+      "emotion": "neutral",
+      "stress_level": "medium",
+      "confidence": 0.9157938957214355,
+      "wellness_score": 83,
+      "severity": "low",
+      "sleep_hours": null,
+      "heart_rate": null,
+      "hrv": null,
+      "activity_level": null,
+      "source_modalities": [
+        "facial"
+      ]
+    }
+  ]
+}

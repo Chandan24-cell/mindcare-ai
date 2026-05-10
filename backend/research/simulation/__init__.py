@@ -1,0 +1,2 @@
+"""Human-state simulation scaffolding."""
+

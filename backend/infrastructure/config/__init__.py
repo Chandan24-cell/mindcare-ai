@@ -1,0 +1,2 @@
+"""Enterprise-ready configuration scaffolding."""
+

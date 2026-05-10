@@ -1,0 +1,13 @@
+{
+  "users": {
+    "default_user": {
+      "baseline_emotion": "neutral",
+      "preferred_interventions": [
+        "breathing",
+        "music"
+      ],
+      "behavioral_pattern": "stress increases with low sleep",
+      "highest_risk_period": "unknown"
+    }
+  }
+}

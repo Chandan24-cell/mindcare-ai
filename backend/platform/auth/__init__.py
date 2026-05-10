@@ -1,0 +1,2 @@
+"""Authentication scaffolding (additive-only)."""
+

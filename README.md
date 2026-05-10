@@ -62,7 +62,7 @@ AI-powered mental wellness and emotion detection platform.
 | Image upload mode | Static image analysis, drag-and-drop upload, same face-first pipeline as camera mode |
 | Manual mood entry | No-camera workflow using self-reported mood and stress scale |
 | Physiological sensors | Heart rate, HRV, sleep hours, activity level, and self mood combined into a stress score |
-| Recommendations | OpenAI-powered suggestions when configured, deterministic fallback otherwise |
+| Recommendations | DeepSeek-powered suggestions when configured, deterministic fallback otherwise |
 | PDF reports | ReportLab-generated export with email capture and downloadable report path |
 | Frontend dashboard | Chart.js history graph, notifications, voice assistant, and theme persistence |
 
@@ -82,7 +82,7 @@ AI-powered mental wellness and emotion detection platform.
          |                            |                             |
          v                            v                             v
   face_detection.py            inference.py                suggestion_engine.py
- RetinaFace (optional)       ViT preprocessing            OpenAI API (optional)
+ RetinaFace (optional)       ViT preprocessing            DeepSeek API (optional)
  MediaPipe (optional)        real + mock modes            rule-based fallback
  OpenCV Haar fallback        stress mapping               always returns guidance
          |                            |
@@ -366,7 +366,7 @@ mindcare-ai/
 | --- | --- | --- |
 | Python | 3.11+ | Required |
 | Model weights | `vit_small_emotion.pth` | Needed for real image mode |
-| OpenAI API key | Optional | Enables AI-generated suggestions |
+| DeepSeek API key | Optional | Enables AI-generated suggestions |
 | Docker | Optional | For containerized deployment |
 
 ### 1. Clone and Install
@@ -385,20 +385,23 @@ pip install -r requirements.txt
 ### 2. Configure Environment
 
 ```bash
-export OPENAI_API_KEY=sk-...
+export OPENROUTER_API_KEY=your_api_key_here
 export MINDCARE_MODEL_PATH=/absolute/path/to/vit_small_emotion.pth
 ```
 
-Only `OPENAI_API_KEY` is optional. If `MINDCARE_MODEL_PATH` is unset, the backend looks for the model in `backend/models/vit_small_emotion.pth`.
+Only `OPENROUTER_API_KEY` is optional. If `MINDCARE_MODEL_PATH` is unset, the backend looks for the model in `backend/models/vit_small_emotion.pth`.
 
 ### 3. Start the Server
 
 ```bash
 PORT=8000 python app.py
 
-# or
-uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload
+# or for LAN/dev container binding
+HOST=0.0.0.0 PORT=8000 uvicorn backend.main:app --reload
 ```
+
+> For local browser access, open `http://localhost:8000` or `http://127.0.0.1:8000`.
+> `0.0.0.0` is only a bind address and should not be entered into the browser.
 
 ### 4. Open the App
 
@@ -414,7 +417,7 @@ docker build -t mindcare-ai .
 docker run -p 7860:7860 mindcare-ai
 
 docker run -p 7860:7860 \
-  -e OPENAI_API_KEY=sk-... \
+  -e OPENROUTER_API_KEY=your_api_key_here \
   mindcare-ai
 
 docker run -p 7860:7860 \
@@ -458,7 +461,7 @@ The browser UI opens directly to a single-page dashboard.
 | ML | PyTorch + Transformers | Standard stack for ViT-based inference |
 | Face detection | RetinaFace, MediaPipe, OpenCV | Accuracy-to-speed fallback chain |
 | Reports | ReportLab | Pure Python PDF generation |
-| Recommendations | OpenAI API + rule engine | Better personalization with reliable offline fallback |
+| Recommendations | DeepSeek API + rule engine | Better personalization with reliable offline fallback |
 | Deployment | Docker, Render | Portable local and cloud execution |
 
 ## Roadmap
@@ -489,7 +492,7 @@ The browser UI opens directly to a single-page dashboard.
 
 ## Important Notes
 
-- Privacy: image processing runs on your own server by default, and recommendations fall back locally when OpenAI is unavailable.
+- Privacy: image processing runs on your own server by default, and recommendations fall back locally when DeepSeek is unavailable.
 - Medical disclaimer: MindCare AI is a wellness-awareness tool, not a medical device or diagnostic system.
 - Model behavior: facial emotion recognition is probabilistic and should be treated as a signal, not ground truth.
 - Optional detectors: RetinaFace and MediaPipe are not installed in the base `requirements.txt`; the default setup still works with OpenCV Haar fallback.

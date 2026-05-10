@@ -8,7 +8,7 @@
  * - Result rendering, chart updates, and toast notifications
  *
  * Dashboard chrome concerns such as greeting rotation, voice assistant, and
- * settings toggles live in dashboard-ui.js.
+ * settings toggles live in     .
  */
 
 // =============================================================================
@@ -998,16 +998,40 @@ async function exportReport() {
             },
             {
                 fallbackMessage: 'Failed to generate report',
-                isSuccess: data => data.status === 'success'
+                isSuccess: data => data.success === true
             }
         );
 
         hideLoading();
-        showSuccess('Report generated successfully! Opening in new tab...');
 
-        // Open the PDF in a new tab
-        const reportUrl = '/' + result.report_path;
-        window.open(reportUrl, '_blank');
+        // Debug log
+        console.log("Generate report response:", result);
+
+        // Backend standardized response
+        const reportData = result?.data || {};
+        const reportPath = reportData.report_url;
+
+        // CASE 1: Download available
+        if (reportData.download_available === true && reportPath) {
+
+            const reportUrl = reportPath.startsWith('http')
+                ? reportPath
+                : `${APP_CONFIG.apiBase}${reportPath.startsWith('/') ? '' : '/'}${reportPath}`;
+
+            console.log("Opening report URL:", reportUrl);
+
+            showSuccess('Report generated successfully!');
+            window.open(reportUrl, '_blank');
+
+        } else {
+
+            // CASE 2: Email-only flow
+            console.log("Report emailed successfully");
+
+            showSuccess(
+                'Your wellness report has been emailed successfully. Please check your inbox.'
+            );
+        }
 
     } catch (error) {
         hideLoading();
