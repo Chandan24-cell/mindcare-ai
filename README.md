@@ -48,11 +48,16 @@ AI-powered mental wellness and emotion detection platform.
 
 ## What Makes This Different
 
-| The Problem | The Solution |
+| Traditional Wellness Apps | MindCare AI |
 | --- | --- |
-| Stress often builds quietly, and self-reporting is delayed, biased, or skipped entirely. Continuous monitoring systems can also be expensive or hard to access. | MindCare AI combines computer vision, manual self-report, and physiological inputs to deliver fast stress estimation with zero dependency on paid inference services. |
-| People regularly misjudge their own stress level until symptoms become visible in behavior, performance, or sleep. | A fine-tuned Vision Transformer analyzes face crops in real time, while manual and sensor modes keep the system usable even without camera input. |
-| Many demo projects stop at prediction and do not provide a usable experience after inference. | MindCare AI includes recommendations, downloadable reports, charting, voice playback, theme persistence, and a full browser dashboard. |
+| Depend heavily on manual self-reporting | Uses multi-modal AI fusion across facial, behavioral, physiological, and contextual signals |
+| Limited emotional understanding | Real-time emotion recognition with ViT-based affective inference |
+| Stateless interactions | Longitudinal session memory, behavioral trend tracking, and adaptive profiling |
+| Generic wellness tips | Personalized recommendations powered by contextual reasoning engines |
+| No explainability | Transparent explainability, modality reliability, and reasoning traces |
+| No predictive intelligence | Future-state simulation, burnout forecasting, fatigue analysis, and cognitive load estimation |
+| Usually frontend demos only | Enterprise-grade backend architecture with observability, health monitoring, websocket streaming, and platform APIs |
+| Single-mode input systems | Camera, upload, manual, sensor, and realtime streaming pipelines |
 
 ## Feature Showcase
 
@@ -69,34 +74,38 @@ AI-powered mental wellness and emotion detection platform.
 ## System Architecture
 
 ```text
-                           USER (Browser / Mobile)
-                 Camera · Upload · Manual Form · Voice UI
+                           USER INTERACTION LAYER
+         Camera · Upload · Manual Input · Sensors · WebSocket Stream
                                       |
-                                      | HTTP / REST
                                       v
-                         FastAPI Backend (Uvicorn)
-                   backend/main.py routes + static serving
-                       /            /health    /predict/*
+                          FRONTEND DASHBOARD (SPA)
+                Charts · Voice UI · Reports · Theme Engine · Settings
                                       |
-         +----------------------------+-----------------------------+
-         |                            |                             |
-         v                            v                             v
-  face_detection.py            inference.py                suggestion_engine.py
- RetinaFace (optional)       ViT preprocessing            DeepSeek API (optional)
- MediaPipe (optional)        real + mock modes            rule-based fallback
- OpenCV Haar fallback        stress mapping               always returns guidance
-         |                            |
-         +-------------+--------------+
-                       |
-                       v
-                model_loader.py
-        google/vit-base-patch16-224
-        weights from backend/models/
-                       |
-                       v
-              report_generator.py
-            ReportLab PDF generation
-              reports/report_*.pdf
+                                      v
+                           FASTAPI APPLICATION CORE
+                     REST APIs · WebSocket APIs · Static Serving
+                                      |
+        +-----------------------------+------------------------------+
+        |                             |                              |
+        v                             v                              v
+  Prediction Engine            Intelligence Layer           Platform Layer
+  ViT Inference                Analytics & Cognition        Enterprise APIs
+        |                             |                              |
+        |                             |                              |
+        v                             v                              v
+  Face Detection              Trend Analytics               Auth Scaffolding
+  MediaPipe                   Burnout Detection             Metrics
+  OpenCV                      Explainability                Monitoring
+  RetinaFace                  Behavioral Profiling          Health Checks
+        |                     Risk Forecasting              Queue Systems
+        |                     Fatigue Detection             WebSockets
+        |                     Personalization               Structured Logging
+        |                     Future Simulation             MLOps Scaffolding
+        +-----------------------------+------------------------------+
+                                      |
+                                      v
+                             REPORTING & EXPORTS
+                     PDF Reports · Research Export APIs
 ```
 
 ## ML Model & Intelligence
@@ -123,6 +132,32 @@ Softmax over 7 labels
    v
 Emotion -> stress mapping
 ```
+
+## Advanced Intelligence Layer
+
+MindCare AI evolved from a simple emotion detector into a research-oriented cognitive wellness platform.
+
+The system now includes deterministic intelligence engines for:
+
+| Intelligence System | Purpose |
+| --- | --- |
+| Multimodal Fusion Engine | Combines image, manual, and sensor signals into unified wellness inference |
+| Trend Analytics Engine | Tracks emotional progression and longitudinal stress trends |
+| Burnout Detection | Identifies sustained high-risk emotional patterns |
+| Stability & Recovery Analysis | Measures emotional consistency and resilience recovery |
+| Explainability Engine | Produces transparent reasoning traces and modality confidence |
+| Behavioral Profiling | Learns user behavioral tendencies over time |
+| Adaptive Recommendation Engine | Personalizes interventions based on historical effectiveness |
+| Emotional Drift Engine | Detects gradual emotional movement across sessions |
+| Risk Forecasting Engine | Projects future wellness risk trajectories |
+| Cognitive Load Estimation | Estimates overload and mental fatigue |
+| Intervention Simulation | Simulates possible future wellness outcomes |
+| Temporal Reasoning Engine | Understands longitudinal emotional transitions |
+| Self-Evolving Profiles | Continuously adapts contextual user understanding |
+| Orchestration Engine | Coordinates intelligence outputs into unified insights |
+
+All systems are additive, modular, and production-safe.
+
 
 ### Model Specifications
 
@@ -314,40 +349,39 @@ Response:
 
 ```text
 mindcare-ai/
-|
-|-- backend/
-|   |-- api/
-|   |   |-- request_utils.py
-|   |-- main.py
-|   |-- inference.py
-|   |-- face_detection.py
-|   |-- model_loader.py
-|   |-- suggestion_engine.py
-|   |-- report_generator.py
-|   |-- schemas.py
-|   |-- utils/
-|   `-- models/
-|
-|-- frontend/
-|   |-- assets/
-|   |   `-- favicon.svg
-|   |-- css/
-|   |   |-- base.css
-|   |   `-- styles.css
-|   |-- js/
-|   |   |-- app.js
-|   |   `-- dashboard-ui.js
-|   |-- index.html
-|   |-- script.js      (compatibility loader)
-|   `-- styles.css      (compatibility stylesheet)
-|
-|-- reports/
-|-- Dockerfile
-|-- render.yaml
-|-- requirements.txt
-|-- app.py
-`-- README.md
-```
+├── backend/
+│   ├── api/
+│   ├── analytics/
+│   ├── cognition/
+│   ├── copilot/
+│   ├── infrastructure/
+│   ├── intelligence/
+│   ├── middleware/
+│   ├── ml/
+│   ├── mlops/
+│   ├── observability/
+│   ├── orchestration/
+│   ├── platform/
+│   ├── realtime/
+│   ├── realtime_streaming/
+│   ├── research/
+│   ├── security/
+│   ├── simulation/
+│   ├── utils/
+│   ├── main.py
+│   └── models/
+├── frontend/
+│   ├── css/
+│   ├── js/
+│   ├── assets/
+│   └── index.html
+├── reports/
+├── deployment/
+├── docs/
+├── Dockerfile
+├── requirements.txt
+├── app.py
+└── README.md
 
 ### Architecture Notes
 
@@ -417,7 +451,7 @@ docker build -t mindcare-ai .
 docker run -p 7860:7860 mindcare-ai
 
 docker run -p 7860:7860 \
-  -e OPENROUTER_API_KEY=your_api_key_here \
+  -e OPENROUTER_API_KEY= your api key here
   mindcare-ai
 
 docker run -p 7860:7860 \
@@ -464,48 +498,231 @@ The browser UI opens directly to a single-page dashboard.
 | Recommendations | DeepSeek API + rule engine | Better personalization with reliable offline fallback |
 | Deployment | Docker, Render | Portable local and cloud execution |
 
+# Research & Simulation APIs
+
+This section outlines the available API endpoints for research operations, simulations, and data exports. 
+
+## Endpoints Overview
+
+| Endpoint | Purpose |
+| :--- | :--- |
+| `/research/benchmarks` | Research benchmarking |
+| `/research/explainability` | Explainability exports |
+| `/research/simulation` | Intervention simulation |
+| `/research/export/json` | JSON export |
+| `/research/export/csv` | CSV export |
+| `/research/export/markdown` | Markdown export |
+
+---
+**Note:** Please refer to the specific API documentation for details on required parameters, headers, and request/response payloads for each endpoint.
+
+
+---
+
+# 6. APPEND “Research Direction”
+
+```md
+## Research Direction
+
+MindCare AI is being expanded beyond traditional emotion recognition into a broader cognitive wellness intelligence platform.
+
+Current research directions include:
+
+- Multimodal affective computing
+- Cognitive state modeling
+- Emotional memory systems
+- Behavioral graph analysis
+- Longitudinal emotional forecasting
+- Adaptive intervention learning
+- Human-centered explainable AI
+- Realtime emotional drift detection
+- Cognitive overload estimation
+- Personalized wellness simulation
+
+The architecture is intentionally modular to support future publication-oriented experimentation and enterprise deployment.
+```
+
+---
+
+# 7. UPDATE ROADMAP
+
+Replace roadmap with:
+
+```md
 ## Roadmap
 
-### v1.0
-
-- Real-time ViT inference
-- Multi-modal input support
+### Phase 1 — Foundation ✅
+- ViT-based facial emotion inference
+- Multi-input stress analysis
 - PDF reporting
-- Voice-assisted UI
+- Frontend dashboard
 
-### v1.1
+### Phase 2 — Analytics ✅
+- Session memory
+- Trend analytics
+- Burnout detection
+- Recovery analysis
 
-- ONNX export for edge inference
-- Liveness and anti-spoof checks before prediction
+### Phase 3 — Intelligence ✅
+- Explainability engine
+- Behavioral profiling
+- Personalization
+- Adaptive recommendations
 
-### v2.0
+### Phase 4 — Realtime Systems ✅
+- Emotional drift analysis
+- Fatigue detection
+- Cognitive load estimation
+- Risk forecasting
+- Wellness copilot scaffolding
 
-- Multi-language UI and voice output
-- Expanded sensor fusion
-- Automated PDF cleanup task
+### Phase 5 — Enterprise Infrastructure ✅
+- Health monitoring
+- Metrics endpoints
+- Structured logging
+- MLOps scaffolding
+- Queue systems
+- WebSocket infrastructure
 
-### v3.0
+### Phase 6 — Research Intelligence ✅
+- Temporal reasoning
+- Emotional memory
+- Intervention simulation
+- Self-evolving profiles
+- Research export systems
 
-- CI/CD hardening
-- Mobile-first PWA
-- Wearable integrations
+### Phase 7 — Platform Expansion 🚧
+- Persistent database layer
+- Authentication hardening
+- Production observability
+- User platform APIs
+
+### Future Vision
+- ONNX/TensorRT optimization
+- Edge AI deployment
+- Wearable integration
+- Federated wellness learning
+- Mobile companion app
+- Research publication pipeline
+```
+
+---
+
+# 8. IMPORTANT SECURITY FIX
+
+REMOVE THIS ENTIRE PART IMMEDIATELY:
+
+```bash
+export OPENROUTER_API_KEY=your_api_key_here
+```
+
+Never expose real API keys in README.
+
+Replace with:
+
+```bash
+export OPENROUTER_API_KEY=your_api_key_here
+```
+
+---
+
+# 9. ADD NEW VERSION FOOTER
+
+Replace footer with:
+
+```md
+<div align="center">
+
+### MindCare AI
+
+Production-Ready Cognitive Wellness Intelligence Platform
+
+Built with:
+FastAPI · PyTorch · Vision Transformers · WebSockets · MLOps · Explainable AI
+
+**Author:** Chandan Kumar Sah  
+Department of Artificial Intelligence & Machine Learning
+
+MindCare AI · Research & Enterprise Edition · MIT License
+
+</div>
+```
 
 ## Important Notes
 
-- Privacy: image processing runs on your own server by default, and recommendations fall back locally when DeepSeek is unavailable.
-- Medical disclaimer: MindCare AI is a wellness-awareness tool, not a medical device or diagnostic system.
-- Model behavior: facial emotion recognition is probabilistic and should be treated as a signal, not ground truth.
-- Optional detectors: RetinaFace and MediaPipe are not installed in the base `requirements.txt`; the default setup still works with OpenCV Haar fallback.
+### Privacy & Data Handling
+
+- MindCare AI processes inference locally/on your own deployment infrastructure by default.
+- No biometric data is permanently stored unless persistence features are explicitly enabled.
+- Session analytics and behavioral profiling are designed with privacy-aware architecture principles.
+- Optional AI-enhanced recommendation systems gracefully fall back to deterministic local reasoning when external AI providers are unavailable.
+
+### Medical Disclaimer
+
+MindCare AI is an AI-powered wellness and cognitive analytics platform intended for educational, research, and wellness-monitoring purposes only.
+
+It is **not**:
+- a medical device,
+- a psychiatric diagnostic system,
+- a clinical decision-making tool,
+- or a replacement for licensed healthcare professionals.
+
+Always seek qualified medical or mental health support for clinical concerns.
+
+### Model & AI Behavior
+
+- Emotion recognition is probabilistic and inference-based.
+- Facial expressions alone cannot determine psychological condition with certainty.
+- Multi-modal outputs should be interpreted as supportive wellness signals rather than objective truth.
+- Predictions may vary depending on lighting, pose, camera quality, physiological variance, and user context.
+
+### Optional Dependencies
+
+Some advanced modules are optional and intentionally decoupled from the base installation:
+
+| Dependency | Purpose |
+| --- | --- |
+| RetinaFace | High-accuracy face detection |
+| MediaPipe | Fast realtime landmark detection |
+| OpenRouter / LLM APIs | AI-generated recommendations |
+| WebSockets | Realtime streaming infrastructure |
+| ONNX Runtime | Optimized inference acceleration |
+
+The default installation continues to work with OpenCV Haar Cascade fallback detection.
+
+---
 
 ## Author
 
 <div align="center">
-  <strong>Chandan Kumar Sah</strong><br>
-  Department of Artificial Intelligence &amp; Machine Learning<br>
-  Computer Vision · Deep Learning · MLOps<br>
-  PyTorch · TensorFlow · OpenCV · Docker · CI/CD
-  <br><br>
-  MindCare AI · v1.0 · MIT License
+
+### Chandan Kumar Sah
+
+Department of Artificial Intelligence & Machine Learning
+
+Computer Vision · Deep Learning · Affective AI · MLOps · Cognitive Intelligence Systems
+
+PyTorch · FastAPI · Vision Transformers · OpenCV · Docker · WebSockets · Explainable AI
+
+<br>
+
+### MindCare AI
+
+Research & Enterprise Cognitive Wellness Platform
+
+Built for:
+Multimodal Intelligence · Realtime Emotion AI · Behavioral Analytics · Wellness Research
+
+<br>
+
+MIT License
+
 </div>
 
-If this project helped you, consider giving it a star on GitHub.
+---
+
+<div align="center">
+
+⭐ If this project helped you, consider starring the repository on GitHub.
+
+</div>
