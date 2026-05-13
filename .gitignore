@@ -10,4 +10,6 @@ reports/
 *.onnx
 node_modules/
 backend/data/*.json
-EOF
+EOFassets/*.jpeg
+assets/*.jpg
+assets/*.png
