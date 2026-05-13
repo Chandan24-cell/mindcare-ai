@@ -10,7 +10,6 @@ environment variable, or 7860 when PORT is unset for Docker Spaces.
 
 import os
 import uvicorn
-import webbrowser
 from dotenv import load_dotenv
 from pathlib import Path
 
@@ -25,27 +24,15 @@ DEFAULT_PORT = 7860
 
 
 def run():
-    port = int(os.getenv("PORT", DEFAULT_PORT))
-    environment = os.getenv("ENVIRONMENT", "development").strip().lower()
-    host = os.getenv(
-        "HOST",
-        "127.0.0.1" if environment == "development" else "0.0.0.0",
-    ).strip()
+    host = os.getenv("HOST", "0.0.0.0").strip()
+    port = int(os.getenv("PORT", str(DEFAULT_PORT)))
 
-    browser_url = (
-        f"http://localhost:{port}"
-        if host == "0.0.0.0"
-        else f"http://{host}:{port}"
+    uvicorn.run(
+        "backend.main:app",
+        host=host,
+        port=port,
+        reload=False,
     )
-
-    # Auto-open browser only for local development
-    if environment == "development":
-        try:
-            webbrowser.open(browser_url)
-        except Exception:
-            pass  # Silently fail if browser opening fails
-
-uvicorn.run("backend.main:app", host="0.0.0.0", port=port)
 
 
 if __name__ == "__main__":
