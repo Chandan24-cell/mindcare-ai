@@ -692,6 +692,14 @@ MIT License
 
 ---
 
+# 📄 Report
+
+**Google Docs Link:**
+
+[View Report](https://docs.google.com/document/d/155UIDUjc92SQdJFLGwub_aa_Nt3nSlRYY4k3Nyyjrws/edit?usp=sharing)
+
+
+
 <div align="center">
 
 ⭐ If this project helped you, consider starring the repository on GitHub.
