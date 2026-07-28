@@ -698,6 +698,14 @@ MIT License
 
 [View Report](https://docs.google.com/document/d/155UIDUjc92SQdJFLGwub_aa_Nt3nSlRYY4k3Nyyjrws/edit?usp=sharing)
 
+## 📑 Project Documentation
+
+[![Documentation](https://img.shields.io/badge/View-Documentation-blue?style=for-the-badge&logo=google-docs)](https://docs.google.com/document/d/1AD_YVulWbJdkL9py1-GBH-XsbuVyhb4iToFzThb--9A/edit?usp=sharing)
+
+---
+
+### 📌 Direct Link
+[Open Documentation](https://docs.google.com/document/d/1AD_YVulWbJdkL9py1-GBH-XsbuVyhb4iToFzThb--9A/edit?usp=sharing)
 
 
 <div align="center">
