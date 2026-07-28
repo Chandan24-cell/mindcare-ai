@@ -694,9 +694,9 @@ MIT License
 
 # 📄 Report
 
-**Google Docs Link:**
+[![Report](https://img.shields.io/badge/View-Report-blue?style=for-the-badge&logo=google-docs)](https://docs.google.com/document/d/155UIDUjc92SQdJFLGwub_aa_Nt3nSlRYY4k3Nyyjrws/edit?usp=sharing)
 
-[View Report](https://docs.google.com/document/d/155UIDUjc92SQdJFLGwub_aa_Nt3nSlRYY4k3Nyyjrws/edit?usp=sharing)
+---
 
 ## 📑 Project Documentation
 
