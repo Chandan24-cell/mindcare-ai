@@ -704,9 +704,11 @@ MIT License
 
 ---
 
-### 📌 Direct Link
-[Open Documentation](https://docs.google.com/document/d/1AD_YVulWbJdkL9py1-GBH-XsbuVyhb4iToFzThb--9A/edit?usp=sharing)
+## 📄 Research Paper
 
+[![Research Paper](https://img.shields.io/badge/View-Research%20Paper-blue?style=for-the-badge&logo=google-docs)](https://docs.google.com/document/d/1O_FoeEs6L_TmMCifohDw2hWerZxJ1INwOJGgv5gmWNY/edit?usp=sharing)
+
+---
 
 <div align="center">
 
