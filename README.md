@@ -698,6 +698,11 @@ MIT License
 
 ---
 
+## 📊 Project Presentation
+
+[![View Presentation](https://img.shields.io/badge/📄_VIEW-PRESENTATION-4285F4?style=for-the-badge)](https://docs.google.com/presentation/d/18mKcJGjFfobiUHiz40zihTVB9IgwRl7c/edit?usp=sharing)
+
+---
 ## 📑 Project Documentation
 
 [![Documentation](https://img.shields.io/badge/View-Documentation-blue?style=for-the-badge&logo=google-docs)](https://docs.google.com/document/d/1AD_YVulWbJdkL9py1-GBH-XsbuVyhb4iToFzThb--9A/edit?usp=sharing)
