@@ -705,7 +705,7 @@ MIT License
 ---
 ## 📑 Project Documentation
 
-[![Documentation](https://img.shields.io/badge/View-Documentation-blue?style=for-the-badge&logo=google-docs)](https://docs.google.com/document/d/1AD_YVulWbJdkL9py1-GBH-XsbuVyhb4iToFzThb--9A/edit?usp=sharing)
+[![Documentation](https://docs.google.com/document/d/1bQS9gL9mKowVCHfjjEqp1-MM3Z4O_AAUnR5DtPe8p7o/edit?usp=sharing)
 
 ---
 
