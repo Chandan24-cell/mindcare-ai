@@ -560,47 +560,41 @@ The architecture is intentionally modular to support future publication-oriented
 
 ## Roadmap
 
-### Phase 1 — Foundation ✅
+### Phase 1 — Foundation 
 - ViT-based facial emotion inference
 - Multi-input stress analysis
 - PDF reporting
 - Frontend dashboard
-
-### Phase 2 — Analytics ✅
+### Phase 2 — Analytics 
 - Session memory
 - Trend analytics
 - Burnout detection
 - Recovery analysis
-
-### Phase 3 — Intelligence ✅
+### Phase 3 — Intelligence 
 - Explainability engine
 - Behavioral profiling
 - Personalization
 - Adaptive recommendations
-
-### Phase 4 — Realtime Systems ✅
+### Phase 4 — Realtime Systems 
 - Emotional drift analysis
 - Fatigue detection
 - Cognitive load estimation
 - Risk forecasting
 - Wellness copilot scaffolding
-
-### Phase 5 — Enterprise Infrastructure ✅
+### Phase 5 — Enterprise Infrastructure 
 - Health monitoring
 - Metrics endpoints
 - Structured logging
 - MLOps scaffolding
 - Queue systems
 - WebSocket infrastructure
-
-### Phase 6 — Research Intelligence ✅
+### Phase 6 — Research Intelligence 
 - Temporal reasoning
 - Emotional memory
 - Intervention simulation
 - Self-evolving profiles
 - Research export systems
-
-### Phase 7 — Platform Expansion 🚧
+### Phase 7 — Platform Expansion 
 - Persistent database layer
 - Authentication hardening
 - Production observability
